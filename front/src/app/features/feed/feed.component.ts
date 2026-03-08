@@ -5,15 +5,8 @@ import { CommonModule } from '@angular/common';
   selector: 'app-feed',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <section class="page">
-      <h1>Feed</h1>
-      <article *ngFor="let post of samplePosts" class="post-item">
-        <h2>{{ post.title }}</h2>
-        <p>{{ post.excerpt }}</p>
-      </article>
-    </section>
-  `,
+  templateUrl: './feed.component.html',
+  styleUrls: ['./feed.component.scss'],
 })
 export class FeedComponent {
   samplePosts = [

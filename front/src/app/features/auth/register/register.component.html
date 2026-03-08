@@ -1,0 +1,29 @@
+<section class="register-page">
+  <a class="back-link" routerLink="/"><mat-icon>arrow_back</mat-icon></a>
+  <img class="mobile-auth-logo" src="assets/logo_p6.png" alt="MDD logo" />
+  <mat-card class="register-card">
+    <h1>Inscription</h1>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <mat-form-field appearance="outline">
+        <mat-label>Nom d'utilisateur</mat-label>
+        <input matInput formControlName="username" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Adresse e-mail</mat-label>
+        <input matInput formControlName="email" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Mot de passe</mat-label>
+        <input matInput type="password" formControlName="password" />
+      </mat-form-field>
+
+      <p class="error" *ngIf="(error$ | async) as error">{{ error }}</p>
+
+      <button class="register-btn" mat-raised-button color="primary" type="submit" [disabled]="form.invalid || (loading$ | async)">
+        S'inscrire
+      </button>
+    </form>
+  </mat-card>
+</section>

@@ -1,0 +1,23 @@
+.welcome-page {
+  min-height: calc(100vh - 8.75rem);
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 1.5rem;
+}
+
+.welcome-logo {
+  width: min(25.75rem, 78vw);
+}
+
+.actions {
+  display: flex;
+  gap: 1.2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.actions button {
+  min-width: 8.75rem;
+  min-height: 2.5rem;
+}
