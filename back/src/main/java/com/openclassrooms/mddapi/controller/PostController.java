@@ -4,6 +4,7 @@ import com.openclassrooms.mddapi.dto.PostDto;
 import com.openclassrooms.mddapi.service.PostService;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,6 +21,11 @@ public class PostController {
   @GetMapping("/feed")
   public List<PostDto> getFeed() {
     return postService.getFeed();
+  }
+
+  @GetMapping("/{id}")
+  public PostDto getPost(@PathVariable Long id) {
+    return postService.getPostById(id);
   }
 }
 
