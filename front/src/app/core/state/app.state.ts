@@ -1,16 +1,21 @@
-import { Action, createReducer } from '@ngrx/store';
+import { Injectable } from '@angular/core';
+import { Selector, State } from '@ngxs/store';
 
-export interface AppState {
+export interface AppStateModel {
   isInitialized: boolean;
 }
 
-const initialState: AppState = {
-  isInitialized: true,
-};
-
-const appReducerInternal = createReducer(initialState);
-
-export function appReducer(state: AppState | undefined, action: Action): AppState {
-  return appReducerInternal(state, action);
+@State<AppStateModel>({
+  name: 'app',
+  defaults: {
+    isInitialized: true,
+  },
+})
+@Injectable()
+export class AppState {
+  @Selector()
+  static isInitialized(state: AppStateModel): boolean {
+    return state.isInitialized;
+  }
 }
 
