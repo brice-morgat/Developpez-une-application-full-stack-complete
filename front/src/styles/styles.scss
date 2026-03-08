@@ -1,4 +1,77 @@
-/* You can add global styles to this file, and also import other style files */
+html,
+body {
+  height: 100%;
+}
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body {
+  margin: 0;
+  font-family: "Nunito Sans", "Segoe UI", sans-serif;
+  background: linear-gradient(180deg, #f3f5f7 0%, #edf1f8 100%);
+  color: #1d2636;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 4px 14px rgba(14, 33, 65, 0.18);
+}
+
+.brand {
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.nav-links {
+  margin-left: auto;
+  display: flex;
+  gap: 0.35rem;
+}
+
+.page-shell {
+  max-width: 960px;
+  margin: 1.25rem auto 3rem;
+  padding: 0 1rem;
+}
+
+.page {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 1.25rem;
+  box-shadow: 0 8px 30px rgba(25, 39, 68, 0.08);
+}
+
+.page h1 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.stack {
+  display: grid;
+  gap: 0.6rem;
+}
+
+input,
+textarea {
+  border: 1px solid #cad5e1;
+  border-radius: 10px;
+  padding: 0.65rem 0.75rem;
+  font: inherit;
+}
+
+.post-item {
+  padding: 0.85rem;
+  border: 1px solid #e3e9f3;
+  border-radius: 12px;
+  margin-bottom: 0.75rem;
+}
+
+@media (max-width: 768px) {
+  .nav-links {
+    gap: 0.1rem;
+  }
+
+  .page-shell {
+    margin-top: 1rem;
+  }
+}
