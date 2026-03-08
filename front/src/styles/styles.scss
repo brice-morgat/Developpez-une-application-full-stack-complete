@@ -14,7 +14,7 @@ body {
   position: sticky;
   top: 0;
   z-index: 10;
-  box-shadow: 0 4px 14px rgba(14, 33, 65, 0.18);
+  box-shadow: 0 0.25rem 0.875rem rgba(14, 33, 65, 0.18);
 }
 
 .brand {
@@ -29,16 +29,33 @@ body {
 }
 
 .page-shell {
-  max-width: 960px;
+  max-width: 60rem;
   margin: 1.25rem auto 3rem;
   padding: 0 1rem;
 }
 
+.auth-topbar {
+  height: 4.5rem;
+  border: 0.0625rem solid #000;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.auth-topbar img {
+  width: 6rem;
+  height: 2.75rem;
+  object-fit: contain;
+}
+
 .page {
   background: #ffffff;
-  border-radius: 14px;
+  border-radius: 0.875rem;
   padding: 1.25rem;
-  box-shadow: 0 8px 30px rgba(25, 39, 68, 0.08);
+  box-shadow: 0 0.5rem 1.875rem rgba(25, 39, 68, 0.08);
 }
 
 .page h1 {
@@ -53,20 +70,24 @@ body {
 
 input,
 textarea {
-  border: 1px solid #cad5e1;
-  border-radius: 10px;
+  border: 0.0625rem solid #cad5e1;
+  border-radius: 0.625rem;
   padding: 0.65rem 0.75rem;
   font: inherit;
 }
 
 .post-item {
   padding: 0.85rem;
-  border: 1px solid #e3e9f3;
-  border-radius: 12px;
+  border: 0.0625rem solid #e3e9f3;
+  border-radius: 0.75rem;
   margin-bottom: 0.75rem;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 48rem) {
+  .auth-topbar {
+    display: none;
+  }
+
   .nav-links {
     gap: 0.1rem;
   }

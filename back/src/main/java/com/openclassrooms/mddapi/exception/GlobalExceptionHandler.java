@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -43,6 +44,12 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ApiErrorDto> handleBadRequest(
       IllegalArgumentException exception, HttpServletRequest request) {
     return buildResponse(HttpStatus.BAD_REQUEST, exception.getMessage(), request, null);
+  }
+
+  @ExceptionHandler(BadCredentialsException.class)
+  public ResponseEntity<ApiErrorDto> handleBadCredentials(
+      BadCredentialsException exception, HttpServletRequest request) {
+    return buildResponse(HttpStatus.UNAUTHORIZED, "Invalid credentials", request, null);
   }
 
   @ExceptionHandler(Exception.class)
@@ -86,4 +93,3 @@ public class GlobalExceptionHandler {
     return Map.of();
   }
 }
-

@@ -3,20 +3,8 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-create-post',
   standalone: true,
-  template: `
-    <section class="page">
-      <h1>Create Post</h1>
-      <form class="stack">
-        <label>Topic</label>
-        <input type="text" placeholder="Angular" />
-        <label>Title</label>
-        <input type="text" placeholder="My first post" />
-        <label>Content</label>
-        <textarea rows="6" placeholder="Write your post"></textarea>
-        <button type="button">Publish</button>
-      </form>
-    </section>
-  `,
+  templateUrl: './create-post.component.html',
+  styleUrls: ['./create-post.component.scss'],
 })
 export class CreatePostComponent {}
 

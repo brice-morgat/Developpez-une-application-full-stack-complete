@@ -1,7 +1,9 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/auth/auth.guard';
 import { MainLayoutComponent } from './core/layout/main-layout.component';
 import { LoginComponent } from './features/auth/login/login.component';
 import { RegisterComponent } from './features/auth/register/register.component';
+import { WelcomeComponent } from './features/auth/welcome/welcome.component';
 import { FeedComponent } from './features/feed/feed.component';
 import { CreatePostComponent } from './features/posts/create-post/create-post.component';
 import { PostDetailComponent } from './features/posts/post-detail/post-detail.component';
@@ -13,16 +15,16 @@ export const routes: Routes = [
     path: '',
     component: MainLayoutComponent,
     children: [
-      { path: '', pathMatch: 'full', redirectTo: 'feed' },
+      { path: '', component: WelcomeComponent },
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
-      { path: 'feed', component: FeedComponent },
-      { path: 'topics', component: TopicsComponent },
-      { path: 'post/:id', component: PostDetailComponent },
-      { path: 'create-post', component: CreatePostComponent },
-      { path: 'profile', component: ProfileComponent },
+      { path: 'feed', component: FeedComponent, canActivate: [authGuard] },
+      { path: 'topics', component: TopicsComponent, canActivate: [authGuard] },
+      { path: 'post/:id', component: PostDetailComponent, canActivate: [authGuard] },
+      { path: 'create-post', component: CreatePostComponent, canActivate: [authGuard] },
+      { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
     ],
   },
-  { path: '**', redirectTo: 'feed' },
+  { path: '**', redirectTo: '' },
 ];
 
