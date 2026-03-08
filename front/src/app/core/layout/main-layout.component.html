@@ -1,0 +1,15 @@
+<mat-toolbar class="topbar" color="primary" *ngIf="showMainHeader">
+  <span class="brand">MDD</span>
+  <nav class="nav-links">
+    <a mat-button routerLink="/feed" routerLinkActive="active">Feed</a>
+    <a mat-button routerLink="/topics" routerLinkActive="active">Topics</a>
+    <a mat-button routerLink="/create-post" routerLinkActive="active">Create</a>
+    <a mat-button routerLink="/profile" routerLinkActive="active">Profile</a>
+  </nav>
+</mat-toolbar>
+<header class="auth-topbar" *ngIf="showAuthHeader">
+  <img src="assets/logo_p6.png" alt="MDD logo" />
+</header>
+<main class="page-shell">
+  <router-outlet></router-outlet>
+</main>

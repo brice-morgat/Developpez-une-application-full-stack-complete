@@ -5,14 +5,8 @@ import { CommonModule } from '@angular/common';
   selector: 'app-topics',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <section class="page">
-      <h1>Topics</h1>
-      <ul>
-        <li *ngFor="let topic of topics">{{ topic }}</li>
-      </ul>
-    </section>
-  `,
+  templateUrl: './topics.component.html',
+  styleUrls: ['./topics.component.scss'],
 })
 export class TopicsComponent {
   topics = ['Java', 'Angular', 'Spring Security'];

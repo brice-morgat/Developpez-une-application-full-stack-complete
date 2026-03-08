@@ -1,0 +1,77 @@
+.register-page {
+  width: 100%;
+  max-width: 26.25rem;
+  margin: 0 auto;
+  display: grid;
+  place-items: center;
+  padding: 1rem 1rem 2rem;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.back-link {
+  position: absolute;
+  left: 0.25rem;
+  top: 0.2rem;
+  color: #111;
+}
+
+.register-card {
+  width: 100%;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  padding: 0;
+}
+
+.mobile-auth-logo {
+  width: 9.75rem;
+  height: auto;
+  margin: 1.5rem 0 1.25rem;
+}
+
+h1 {
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin: 0 0 0.9rem;
+  text-align: center;
+}
+
+form {
+  display: grid;
+  gap: 0.55rem;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.error {
+  margin: 0.35rem 0 0;
+  color: #c62828;
+  text-align: center;
+  font-size: 0.8125rem;
+}
+
+.register-btn {
+  margin-top: 0.5rem;
+  width: 100%;
+  min-height: 2.75rem;
+  border-radius: 0.625rem;
+}
+
+@media (min-width: 48rem) {
+  .mobile-auth-logo {
+    display: none;
+  }
+
+  .register-page {
+    max-width: 28.75rem;
+    padding-top: 1.3rem;
+  }
+
+  .register-btn {
+    width: 10.625rem;
+    justify-self: center;
+  }
+}
