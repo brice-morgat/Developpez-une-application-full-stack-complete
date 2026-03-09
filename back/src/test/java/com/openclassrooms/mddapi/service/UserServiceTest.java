@@ -1,4 +1,4 @@
-﻿package com.openclassrooms.mddapi.service;
+package com.openclassrooms.mddapi.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -27,8 +27,7 @@ class UserServiceTest {
   @Mock private SubscriptionRepository subscriptionRepository;
   @Mock private UserRepository userRepository;
   @Mock private PasswordEncoder passwordEncoder;
-
-  private final UserMapper userMapper = new UserMapper();
+  @Mock private UserMapper userMapper;
 
   @InjectMocks private UserService userService;
 
@@ -39,6 +38,8 @@ class UserServiceTest {
 
     when(currentUserService.getCurrentUser()).thenReturn(current);
     when(subscriptionRepository.findAllByUserId(1L)).thenReturn(List.of(Subscription.builder().topic(topic).build()));
+    when(userMapper.toMe(current, List.of(3L)))
+        .thenReturn(new com.openclassrooms.mddapi.dto.MeResponseDto(1L, "alice@mail.com", "alice", List.of(3L)));
 
     var result = userService.getCurrentUserProfile();
 
@@ -69,6 +70,8 @@ class UserServiceTest {
     when(passwordEncoder.encode("secret123")).thenReturn("encoded");
     when(userRepository.save(current)).thenReturn(current);
     when(subscriptionRepository.findAllByUserId(1L)).thenReturn(List.of());
+    when(userMapper.toMe(current, List.of()))
+        .thenReturn(new com.openclassrooms.mddapi.dto.MeResponseDto(1L, "new@mail.com", "Alice2", List.of()));
 
     var result = userService.updateCurrentUser(new UpdateMeRequestDto("new@mail.com", "Alice2", "secret123"));
 

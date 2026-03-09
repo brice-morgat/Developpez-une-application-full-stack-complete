@@ -1,41 +1,56 @@
-﻿# Rapport de tests
+# Rapport de tests
 
 Date: 2026-03-09
 
 ## Outils
 - Back-end: JUnit 5 + Mockito + JaCoCo (Maven)
 - Front-end: Angular/Karma (existant)
-- E2E: Cypress (à implémenter sur branche front tests)
+- E2E: Cypress (a implementer sur branche front tests)
 
-## Stratégie appliquée (back)
-- Tests unitaires des services métier principaux:
+## Strategie appliquee (back)
+- Tests unitaires des services metier principaux:
   - `AuthService`
   - `TopicService`
   - `PostService`
   - `UserService`
   - `CurrentUserService`
-- Tests unitaires de la sécurité JWT:
+- Tests unitaires de la securite JWT:
   - `JwtService`
+- Tests des controllers (delegation + codes de retour):
+  - `AuthController`
+  - `PostController`
+  - `TopicController`
+  - `UserController`
+- Tests mappers et gestion globale des erreurs:
+  - `UserMapper`, `TopicMapper`, `PostMapper`
+  - `GlobalExceptionHandler`
 
-## Exécution
-Commande cible:
+## Execution
+Commande executee (JDK IntelliJ 21):
 ```bash
 cd back
+$env:JAVA_HOME='C:\Users\brice.morgat\.jdks\temurin-21.0.9'
+$env:Path="$env:JAVA_HOME\\bin;$env:Path"
 ./mvnw clean test
 ```
 
-Résultat dans cet environnement local:
-- échec d'exécution avant lancement des tests applicatifs, car JDK 21 requis par le projet et machine locale en JDK 17 (`release version 21 not supported`).
+Resultat:
+- SUCCESS
+- 43 tests executes
+- 0 echec
+- 0 erreur
 
-## Couverture
-JaCoCo est configuré dans `back/pom.xml`.
-Rapport attendu après exécution en JDK 21:
+## Couverture JaCoCo
+Rapport genere:
 - `back/target/site/jacoco/index.html`
 
+Mesures globales:
+- LINE: 73.11% (310/424)
+- INSTRUCTION: 78.00% (1372/1759)
+
 Objectif projet:
-- couverture >= 70 % (à valider sur CI ou machine locale JDK 21).
+- couverture >= 70%: atteint.
 
 ## Suite
-- Exécuter la commande ci-dessus sur JDK 21.
-- Capturer le pourcentage global lignes/instructions et l'ajouter à ce rapport.
-- Compléter avec les tests front (Jest/Karma/Cypress) sur la branche dédiée.
+- Maintenir ce seuil en CI sur les prochaines PR.
+- Completer la branche front tests (unit + e2e) pour couvrir les parcours critiques UI.

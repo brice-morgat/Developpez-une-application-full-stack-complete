@@ -1,4 +1,4 @@
-﻿package com.openclassrooms.mddapi.config;
+package com.openclassrooms.mddapi.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 class JwtServiceTest {
 
-  private static final String SECRET = "01234567890123456789012345678901";
+  private static final String SECRET = "not_base64_secret_value_with_min_32_bytes_123456";
 
   @Test
   void generateAndValidateToken_shouldWork() {
