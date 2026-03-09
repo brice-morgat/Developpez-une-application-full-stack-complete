@@ -1,11 +1,44 @@
-<section class="page">
-  <h1>Post Detail</h1>
-  <article class="post-item">
-    <h2>Sample Post Title</h2>
-    <p>Sample post content ready to be replaced by API data.</p>
-  </article>
-  <h3>Comments</h3>
-  <ul>
-    <li *ngFor="let comment of comments">{{ comment }}</li>
-  </ul>
+﻿<section class="post-detail-screen" *ngIf="!loading && post; else loadingOrError">
+  <header class="post-heading">
+    <a class="back-link" routerLink="/feed" aria-label="Retour aux articles">
+      <mat-icon>arrow_back</mat-icon>
+    </a>
+    <h1>{{ post.title }}</h1>
+  </header>
+
+  <div class="post-meta">
+    <span>{{ post.createdAt | date : 'dd/MM/yyyy' }}</span>
+    <span>{{ post.author.username }}</span>
+    <span>{{ post.topic.name }}</span>
+  </div>
+
+  <p class="post-content">{{ post.content }}</p>
+
+  <hr class="separator" />
+
+  <section class="comments-list">
+    <article class="comment-row" *ngFor="let comment of post.comments">
+      <span class="comment-author">{{ comment.author.username }}</span>
+      <p class="comment-bubble">{{ comment.content }}</p>
+    </article>
+  </section>
+
+  <form class="comment-form" [formGroup]="commentForm" (ngSubmit)="submitComment()">
+    <textarea
+      formControlName="content"
+      rows="3"
+      placeholder="Écrivez ici votre commentaire"
+      aria-label="Votre commentaire"
+    ></textarea>
+    <button class="send-btn" type="submit" [disabled]="submitting" aria-label="Envoyer le commentaire">
+      <mat-icon>send</mat-icon>
+    </button>
+  </form>
 </section>
+
+<ng-template #loadingOrError>
+  <section class="post-state">
+    <p *ngIf="loading">Chargement de l'article...</p>
+    <p *ngIf="!loading && errorMessage">{{ errorMessage }}</p>
+  </section>
+</ng-template>

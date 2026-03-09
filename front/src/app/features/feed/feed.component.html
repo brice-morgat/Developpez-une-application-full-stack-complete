@@ -1,20 +1,27 @@
 ﻿<section class="feed-screen">
   <div class="feed-toolbar">
     <button mat-flat-button class="mdd-btn mdd-btn--primary create-btn" routerLink="/create-post">Créer un article</button>
-    <button class="sort-btn" type="button">
+    <button class="sort-btn" type="button" (click)="toggleSort()" [disabled]="loading">
       Trier par
-      <mat-icon>south</mat-icon>
+      <mat-icon>{{ sort === 'desc' ? 'south' : 'north' }}</mat-icon>
     </button>
   </div>
 
-  <div class="feed-grid">
-    <article *ngFor="let post of samplePosts" class="feed-card mdd-surface-card" [routerLink]="['/post', post.id]">
+  <p class="feed-state" *ngIf="loading">Chargement des articles...</p>
+  <p class="feed-state feed-state--error" *ngIf="!loading && errorMessage">{{ errorMessage }}</p>
+  <p class="feed-state" *ngIf="!loading && !errorMessage && posts.length === 0">
+    Aucun article à afficher. Abonnez-vous d'abord à un thème depuis
+    <a routerLink="/topics">la page Thèmes</a>.
+  </p>
+
+  <div class="feed-grid" *ngIf="!loading && !errorMessage && posts.length > 0">
+    <article *ngFor="let post of posts" class="feed-card mdd-surface-card" [routerLink]="['/post', post.id]">
       <h2>{{ post.title }}</h2>
       <div class="meta">
-        <span>{{ post.date }}</span>
-        <span>{{ post.author }}</span>
+        <span>{{ post.createdAt | date : 'dd/MM/yyyy' }}</span>
+        <span>{{ post.author.username }}</span>
       </div>
-      <p>{{ post.excerpt }}</p>
+      <p>{{ post.content }}</p>
     </article>
   </div>
 </section>

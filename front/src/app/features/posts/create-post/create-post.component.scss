@@ -1,1 +1,56 @@
+﻿.create-post-screen {
+  display: grid;
+  gap: 1.3rem;
+}
 
+.create-post-header {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.create-post-header h1 {
+  margin: 0;
+  font-size: 1.65rem;
+  line-height: 1.2;
+}
+
+.back-link {
+  color: #1d2636;
+  display: inline-flex;
+  text-decoration: none;
+}
+
+.create-post-form {
+  max-width: 36rem;
+  width: 100%;
+  justify-self: center;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.create-post-form mat-form-field {
+  width: 100%;
+}
+
+.submit-btn {
+  margin-top: 0.5rem;
+  width: 8.25rem;
+  justify-self: center;
+}
+
+.create-post-error {
+  margin: 0.4rem 0 0;
+  color: #c62828;
+  text-align: center;
+}
+
+@media (max-width: 48rem) {
+  .create-post-header h1 {
+    font-size: 1.4rem;
+  }
+
+  .create-post-form {
+    max-width: 100%;
+  }
+}

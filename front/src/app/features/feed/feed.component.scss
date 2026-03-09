@@ -1,5 +1,4 @@
-
-.feed-screen {
+﻿.feed-screen {
   display: grid;
   gap: 1.5rem;
 }
@@ -26,10 +25,23 @@
   font-size: 1rem;
 }
 
+.sort-btn[disabled] {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
 .sort-btn mat-icon {
   font-size: 1rem;
   width: 1rem;
   height: 1rem;
+}
+
+.feed-state {
+  margin: 0;
+}
+
+.feed-state--error {
+  color: #c62828;
 }
 
 .feed-grid {
