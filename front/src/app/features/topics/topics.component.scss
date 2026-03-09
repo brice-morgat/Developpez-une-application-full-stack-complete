@@ -1,6 +1,14 @@
-
-.topics-screen {
+﻿.topics-screen {
   display: grid;
+  gap: 1rem;
+}
+
+.topics-state {
+  margin: 0;
+}
+
+.topics-state--error {
+  color: #c62828;
 }
 
 .topics-grid {
@@ -27,6 +35,10 @@
 .subscribe-btn {
   justify-self: center;
   min-width: 10.4rem;
+}
+
+.subscribe-btn[disabled] {
+  opacity: 0.7;
 }
 
 @media (max-width: 48rem) {
