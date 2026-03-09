@@ -1,1 +1,134 @@
 
+.app-topbar {
+  height: 5.875rem;
+  border: 0.0625rem solid #000;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  box-sizing: border-box;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.logo-link img {
+  width: 8.75rem;
+  height: auto;
+  object-fit: contain;
+}
+
+.desktop-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.desktop-nav a {
+  color: #1d2636;
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+
+.desktop-nav a.active {
+  color: #6d59d3;
+  font-weight: 700;
+}
+
+.avatar-link {
+  display: inline-flex;
+  align-items: center;
+}
+
+.avatar-link mat-icon {
+  font-size: 2rem;
+  width: 2rem;
+  height: 2rem;
+}
+
+.mobile-menu-btn {
+  display: none;
+  border: none;
+  background: transparent;
+  color: #1d2636;
+  cursor: pointer;
+}
+
+.mobile-menu-btn mat-icon {
+  font-size: 1.75rem;
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.mobile-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 30;
+}
+
+.mobile-drawer {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: min(78vw, 18rem);
+  height: 100vh;
+  background: #fff;
+  border-left: 0.0625rem solid #d7ddeb;
+  box-shadow: -0.5rem 0 1.5rem rgba(29, 38, 54, 0.16);
+  z-index: 31;
+  display: grid;
+  align-content: start;
+  gap: 0.8rem;
+  padding: 1rem;
+}
+
+.drawer-close {
+  justify-self: end;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.mobile-drawer a {
+  color: #1d2636;
+  text-decoration: none;
+  padding: 0.2rem 0;
+}
+
+.mobile-drawer a.active {
+  color: #6d59d3;
+  font-weight: 700;
+}
+
+.logout-btn {
+  margin-top: 1rem;
+  border: none;
+  background: transparent;
+  color: #6d59d3;
+  text-align: left;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+@media (max-width: 48rem) {
+  .app-topbar {
+    height: 3.875rem;
+    padding: 0 0.5rem;
+  }
+
+  .logo-link img {
+    width: 5.75rem;
+  }
+
+  .desktop-nav {
+    display: none;
+  }
+
+  .mobile-menu-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

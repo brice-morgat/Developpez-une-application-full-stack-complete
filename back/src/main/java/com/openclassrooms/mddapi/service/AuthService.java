@@ -4,13 +4,13 @@ import com.openclassrooms.mddapi.config.JwtService;
 import com.openclassrooms.mddapi.dto.AuthRequestDto;
 import com.openclassrooms.mddapi.dto.AuthResponseDto;
 import com.openclassrooms.mddapi.dto.RegisterRequestDto;
-import com.openclassrooms.mddapi.exception.ResourceNotFoundException;
 import com.openclassrooms.mddapi.mapper.UserMapper;
 import com.openclassrooms.mddapi.model.User;
 import com.openclassrooms.mddapi.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.Map;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,18 +38,21 @@ public class AuthService {
   }
 
   public AuthResponseDto register(RegisterRequestDto request) {
-    if (userRepository.existsByEmail(request.email())) {
+    String normalizedEmail = normalizeEmail(request.email());
+    String normalizedUsername = normalizeUsername(request.username());
+
+    if (userRepository.existsByEmailIgnoreCase(normalizedEmail)) {
       throw new IllegalArgumentException("Email is already used");
     }
-    if (userRepository.existsByUsername(request.username())) {
+    if (userRepository.existsByUsernameIgnoreCase(normalizedUsername)) {
       throw new IllegalArgumentException("Username is already used");
     }
 
     User user =
         userRepository.save(
             User.builder()
-                .email(request.email().trim().toLowerCase())
-                .username(request.username().trim())
+                .email(normalizedEmail)
+                .username(normalizedUsername)
                 .password(passwordEncoder.encode(request.password()))
                 .createdAt(LocalDateTime.now())
                 .build());
@@ -62,10 +65,13 @@ public class AuthService {
   }
 
   public AuthResponseDto login(AuthRequestDto request) {
+    String identifier = normalizeIdentifier(request.identifier());
+    String normalizedEmailIdentifier = identifier.toLowerCase();
+
     User user =
         userRepository
-            .findByEmailOrUsername(request.identifier(), request.identifier())
-            .orElseThrow(() -> new ResourceNotFoundException("Invalid credentials"));
+            .findFirstByEmailIgnoreCaseOrUsernameIgnoreCaseOrderByIdDesc(normalizedEmailIdentifier, identifier)
+            .orElseThrow(() -> new BadCredentialsException("Invalid credentials"));
 
     authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(user.getUsername(), request.password()));
@@ -75,6 +81,18 @@ public class AuthService {
         Map.of("userId", user.getId()));
 
     return new AuthResponseDto(token, userMapper.toAuthUser(user));
+  }
+
+  private String normalizeEmail(String email) {
+    return email.trim().toLowerCase();
+  }
+
+  private String normalizeUsername(String username) {
+    return username.trim();
+  }
+
+  private String normalizeIdentifier(String identifier) {
+    return identifier.trim();
   }
 }
 

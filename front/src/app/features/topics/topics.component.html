@@ -1,6 +1,18 @@
-<section class="page">
-  <h1>Topics</h1>
-  <ul>
-    <li *ngFor="let topic of topics">{{ topic }}</li>
-  </ul>
+<section class="topics-screen">
+  <div class="topics-grid">
+    <article *ngFor="let topic of topics" class="topic-card mdd-surface-card">
+      <h2>{{ topic.name }}</h2>
+      <p>{{ topic.description }}</p>
+      <button
+        mat-flat-button
+        type="button"
+        class="mdd-btn subscribe-btn"
+        [class.mdd-btn--primary]="!topic.subscribed"
+        [class.mdd-btn--primary-muted]="topic.subscribed"
+        (click)="toggleSubscription(topic)"
+      >
+        {{ topic.subscribed ? 'Déjà abonné' : 'S’abonner' }}
+      </button>
+    </article>
+  </div>
 </section>

@@ -1,1 +1,58 @@
 
+.profile-screen {
+  display: grid;
+  gap: 1.4rem;
+}
+
+h1,
+h2 {
+  margin: 0;
+}
+
+.profile-form {
+  max-width: 17.5rem;
+  display: grid;
+  gap: 0.65rem;
+  justify-self: center;
+}
+
+.save-btn {
+  margin-top: 0.4rem;
+}
+
+.profile-separator {
+  width: min(100%, 44.5rem);
+  border: 0;
+  border-top: 0.0625rem solid #000;
+  margin: 0 auto;
+}
+
+.subscriptions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.subscription-card {
+  gap: 0.55rem;
+}
+
+.subscription-card h3 {
+  margin: 0;
+}
+
+.subscription-card p {
+  margin: 0;
+  line-height: 1.35;
+}
+
+.unsubscribe-btn {
+  justify-self: center;
+  min-width: 10.4rem;
+}
+
+@media (max-width: 48rem) {
+  .subscriptions-grid {
+    grid-template-columns: 1fr;
+  }
+}
