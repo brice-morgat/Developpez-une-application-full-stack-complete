@@ -31,6 +31,15 @@
   font-size: 1.1rem;
 }
 
+.desktop-logout {
+  border: none;
+  background: transparent;
+  color: #c00;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
 .desktop-nav a.active {
   color: #6d59d3;
   font-weight: 700;
