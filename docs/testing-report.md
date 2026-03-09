@@ -22,7 +22,7 @@ Date: 2026-03-09
   - `TopicController`
   - `UserController`
 - Tests d'integration controllers (Given/When/Then) sans mock de service:
-  - `ControllerIntegrationTest`
+  - `AuthControllerIT`, `TopicControllerIT`, `PostControllerIT`, `UserControllerIT`
   - execution avec base MySQL de test `db_mdd_test`
   - parcours verifies: register/login, subscribe/unsubscribe, feed, detail+comment, update profile
 - Tests mappers et gestion globale des erreurs:
@@ -40,7 +40,7 @@ $env:Path="$env:JAVA_HOME\\bin;$env:Path"
 
 Resultat:
 - SUCCESS
-- 49 tests executes
+- 52 tests executes
 - 0 echec
 - 0 erreur
 
@@ -50,7 +50,7 @@ Rapport genere:
 
 Mesures globales:
 - LINE: 80.19% (340/424)
-- INSTRUCTION: 84.71% (1490/1759)
+- INSTRUCTION: 85.05% (1496/1759)
 
 Objectif projet:
 - couverture >= 70%: atteint.
