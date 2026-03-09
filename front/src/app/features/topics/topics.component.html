@@ -1,5 +1,8 @@
 ﻿<section class="topics-screen">
-  <div class="topics-grid">
+  <p class="topics-state" *ngIf="loading">Chargement des thèmes...</p>
+  <p class="topics-state topics-state--error" *ngIf="!loading && errorMessage">{{ errorMessage }}</p>
+
+  <div class="topics-grid" *ngIf="!loading && !errorMessage">
     <article *ngFor="let topic of topics" class="topic-card mdd-surface-card">
       <h2>{{ topic.name }}</h2>
       <p>{{ topic.description }}</p>
@@ -9,6 +12,7 @@
         class="mdd-btn subscribe-btn"
         [class.mdd-btn--primary]="!topic.subscribed"
         [class.mdd-btn--primary-muted]="topic.subscribed"
+        [disabled]="pendingTopicId === topic.id"
         (click)="toggleSubscription(topic)"
       >
         {{ topic.subscribed ? 'Déjà abonné' : 'S\'abonner' }}

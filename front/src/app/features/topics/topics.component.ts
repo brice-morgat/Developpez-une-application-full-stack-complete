@@ -1,12 +1,12 @@
-﻿import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+﻿import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { finalize } from 'rxjs';
+import { TopicResponse } from '../../core/api/topics.models';
+import { TopicsService } from '../../core/api/topics.service';
 
-interface TopicViewModel {
-  id: number;
-  name: string;
+interface TopicViewModel extends TopicResponse {
   description: string;
-  subscribed: boolean;
 }
 
 @Component({
@@ -16,39 +16,67 @@ interface TopicViewModel {
   templateUrl: './topics.component.html',
   styleUrls: ['./topics.component.scss'],
 })
-export class TopicsComponent {
-  topics: TopicViewModel[] = [
-    {
-      id: 1,
-      name: 'Titre du thème',
-      description:
-        "Description : lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard...",
-      subscribed: false,
-    },
-    {
-      id: 2,
-      name: 'Titre du thème',
-      description:
-        "Description : lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard...",
-      subscribed: true,
-    },
-    {
-      id: 3,
-      name: 'Titre du thème',
-      description:
-        "Description : lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard...",
-      subscribed: true,
-    },
-    {
-      id: 4,
-      name: 'Titre du thème',
-      description:
-        "Description : lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard...",
-      subscribed: false,
-    },
-  ];
+export class TopicsComponent implements OnInit {
+  private readonly topicsService = inject(TopicsService);
+
+  topics: TopicViewModel[] = [];
+  loading = true;
+  errorMessage: string | null = null;
+  pendingTopicId: number | null = null;
+
+  ngOnInit(): void {
+    this.loadTopics();
+  }
 
   toggleSubscription(topic: TopicViewModel): void {
-    topic.subscribed = !topic.subscribed;
+    if (this.pendingTopicId !== null) {
+      return;
+    }
+
+    this.pendingTopicId = topic.id;
+    this.errorMessage = null;
+
+    const request$ = topic.subscribed
+      ? this.topicsService.unsubscribe(topic.id)
+      : this.topicsService.subscribe(topic.id);
+
+    request$
+      .pipe(
+        finalize(() => {
+          this.pendingTopicId = null;
+        })
+      )
+      .subscribe({
+        next: () => {
+          topic.subscribed = !topic.subscribed;
+        },
+        error: () => {
+          this.errorMessage = "Impossible de mettre à jour l'abonnement.";
+        },
+      });
+  }
+
+  private loadTopics(): void {
+    this.loading = true;
+    this.errorMessage = null;
+
+    this.topicsService
+      .getTopics()
+      .pipe(
+        finalize(() => {
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: (topics) => {
+          this.topics = topics.map((topic) => ({
+            ...topic,
+            description: `Retrouvez les derniers articles autour de ${topic.name}.`,
+          }));
+        },
+        error: () => {
+          this.errorMessage = 'Impossible de charger les thèmes.';
+        },
+      });
   }
 }
