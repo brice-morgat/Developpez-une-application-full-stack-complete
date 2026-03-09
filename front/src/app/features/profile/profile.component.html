@@ -1,6 +1,33 @@
-<section class="page">
-  <h1>Profile</h1>
-  <p>Username: dev_user</p>
-  <p>Email: dev&#64;mdd.dev</p>
-  <button type="button">Edit profile</button>
+<section class="profile-screen">
+  <h1>Profil utilisateur</h1>
+
+  <form [formGroup]="form" (ngSubmit)="save()" class="profile-form">
+    <mat-form-field appearance="outline">
+      <mat-label>Username</mat-label>
+      <input matInput formControlName="username" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Adresse e-mail</mat-label>
+      <input matInput formControlName="email" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Mot de passe</mat-label>
+      <input matInput type="password" formControlName="password" />
+    </mat-form-field>
+
+    <button mat-flat-button type="submit" class="mdd-btn mdd-btn--primary save-btn">Sauvegarder</button>
+  </form>
+
+  <hr class="profile-separator" />
+
+  <h2>Abonnements</h2>
+  <div class="subscriptions-grid">
+    <article class="subscription-card mdd-surface-card" *ngFor="let topic of subscriptions">
+      <h3>{{ topic.name }}</h3>
+      <p>{{ topic.description }}</p>
+      <button class="mdd-btn mdd-btn--primary unsubscribe-btn" type="button">Se désabonner</button>
+    </article>
+  </div>
 </section>

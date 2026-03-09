@@ -1,15 +1,36 @@
-<mat-toolbar class="topbar" color="primary" *ngIf="showMainHeader">
-  <span class="brand">MDD</span>
-  <nav class="nav-links">
-    <a mat-button routerLink="/feed" routerLinkActive="active">Feed</a>
-    <a mat-button routerLink="/topics" routerLinkActive="active">Topics</a>
-    <a mat-button routerLink="/create-post" routerLinkActive="active">Create</a>
-    <a mat-button routerLink="/profile" routerLinkActive="active">Profile</a>
+<header class="app-topbar" *ngIf="showMainHeader">
+  <a class="logo-link" routerLink="/feed" aria-label="MDD home">
+    <img src="assets/logo_p6.png" alt="MDD logo" />
+  </a>
+
+  <nav class="desktop-nav">
+    <a routerLink="/feed" routerLinkActive="active">Articles</a>
+    <a routerLink="/topics" routerLinkActive="active">Thèmes</a>
+    <a routerLink="/profile" routerLinkActive="active" class="avatar-link" aria-label="Profil">
+      <mat-icon>account_circle</mat-icon>
+    </a>
   </nav>
-</mat-toolbar>
+
+  <button class="mobile-menu-btn" type="button" (click)="toggleMobileMenu()" aria-label="Open menu">
+    <mat-icon>menu</mat-icon>
+  </button>
+</header>
+
 <header class="auth-topbar" *ngIf="showAuthHeader">
   <img src="assets/logo_p6.png" alt="MDD logo" />
 </header>
+
+<div class="mobile-overlay" *ngIf="mobileMenuOpen" (click)="closeMobileMenu()"></div>
+<aside class="mobile-drawer" *ngIf="mobileMenuOpen">
+  <button class="drawer-close" type="button" (click)="closeMobileMenu()" aria-label="Close menu">
+    <mat-icon>close</mat-icon>
+  </button>
+  <a routerLink="/feed" routerLinkActive="active" (click)="closeMobileMenu()">Articles</a>
+  <a routerLink="/topics" routerLinkActive="active" (click)="closeMobileMenu()">Thèmes</a>
+  <a routerLink="/profile" routerLinkActive="active" (click)="closeMobileMenu()">Profil</a>
+  <button class="logout-btn" type="button" (click)="logout()">Se déconnecter</button>
+</aside>
+
 <main class="page-shell">
   <router-outlet></router-outlet>
 </main>

@@ -1,17 +1,50 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-feed',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink, MatButtonModule, MatIconModule],
   templateUrl: './feed.component.html',
   styleUrls: ['./feed.component.scss'],
 })
 export class FeedComponent {
   samplePosts = [
-    { title: 'Spring Boot 3 setup tips', excerpt: 'A minimal setup for MVP backend.' },
-    { title: 'Angular feature folders', excerpt: 'A clean base with core/shared/features.' },
+    {
+      id: 1,
+      title: 'Titre de l’article',
+      author: 'Auteur',
+      date: 'Date',
+      excerpt:
+        "Content: lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard...",
+    },
+    {
+      id: 2,
+      title: 'Titre de l’article',
+      author: 'Auteur',
+      date: 'Date',
+      excerpt:
+        "Content: lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard...",
+    },
+    {
+      id: 3,
+      title: 'Titre de l’article',
+      author: 'Auteur',
+      date: 'Date',
+      excerpt:
+        "Content: lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard...",
+    },
+    {
+      id: 4,
+      title: 'Titre de l’article',
+      author: 'Auteur',
+      date: 'Date',
+      excerpt:
+        "Content: lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard...",
+    },
   ];
 }
 

@@ -1,7 +1,20 @@
-<section class="page">
-  <h1>Feed</h1>
-  <article *ngFor="let post of samplePosts" class="post-item">
-    <h2>{{ post.title }}</h2>
-    <p>{{ post.excerpt }}</p>
-  </article>
+<section class="feed-screen">
+  <div class="feed-toolbar">
+    <button mat-flat-button class="mdd-btn mdd-btn--primary create-btn" routerLink="/create-post">Créer un article</button>
+    <button class="sort-btn" type="button">
+      Trier par
+      <mat-icon>south</mat-icon>
+    </button>
+  </div>
+
+  <div class="feed-grid">
+    <article *ngFor="let post of samplePosts" class="feed-card mdd-surface-card" [routerLink]="['/post', post.id]">
+      <h2>{{ post.title }}</h2>
+      <div class="meta">
+        <span>{{ post.date }}</span>
+        <span>{{ post.author }}</span>
+      </div>
+      <p>{{ post.excerpt }}</p>
+    </article>
+  </div>
 </section>
