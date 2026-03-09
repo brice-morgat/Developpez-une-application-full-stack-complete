@@ -12,6 +12,7 @@ Date: 2026-03-09
   - themes + abonnement/desabonnement
   - profil + mise a jour + desabonnement
 - Couverture de tests backend portee au-dessus du seuil cible.
+- Tests d'integration controllers executes sur base MySQL de test (`db_mdd_test`) sans mock de couche service.
 
 ## Axes d'amelioration
 - Budget bundle front depasse (warning Angular build).
@@ -20,7 +21,7 @@ Date: 2026-03-09
 
 ## Recommandations
 - Imposer le seuil de couverture (>= 70%) en CI.
-- Ajouter des tests d'integration API (MockMvc/Testcontainers) sur endpoints critiques.
+- Etendre les scenarios d'integration API (cas d'erreur et limites metier) sur endpoints critiques.
 - Ajouter tests front unitaires + E2E Cypress sur parcours cles.
 - Introduire DTO `TopicResponseDto` enrichi (`description`) pour alignement fonctionnel.
 - Traiter le budget bundle front:

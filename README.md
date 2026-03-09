@@ -57,6 +57,7 @@ cd back
 ```
 JaCoCo est configuré dans `back/pom.xml`.
 Rapport généré: `back/target/site/jacoco/index.html`.
+Les tests d'integration utilisent le profil `test` connecté à `db_mdd_test`.
 
 ### Frontend
 ```bash
