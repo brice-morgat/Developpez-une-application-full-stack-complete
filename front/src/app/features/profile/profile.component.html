@@ -1,7 +1,11 @@
 ﻿<section class="profile-screen">
   <h1>Profil utilisateur</h1>
 
-  <form [formGroup]="form" (ngSubmit)="save()" class="profile-form">
+  <p class="profile-state" *ngIf="loading">Chargement du profil...</p>
+  <p class="profile-state profile-state--error" *ngIf="!loading && errorMessage">{{ errorMessage }}</p>
+  <p class="profile-state profile-state--success" *ngIf="!loading && successMessage">{{ successMessage }}</p>
+
+  <form [formGroup]="form" (ngSubmit)="save()" class="profile-form" *ngIf="!loading">
     <mat-form-field appearance="outline">
       <mat-label>Nom d'utilisateur</mat-label>
       <input matInput formControlName="username" />
@@ -17,17 +21,28 @@
       <input matInput type="password" formControlName="password" />
     </mat-form-field>
 
-    <button mat-flat-button type="submit" class="mdd-btn mdd-btn--primary save-btn">Sauvegarder</button>
+    <button mat-flat-button type="submit" class="mdd-btn mdd-btn--primary save-btn" [disabled]="saving">
+      Sauvegarder
+    </button>
   </form>
 
   <hr class="profile-separator" />
 
   <h2>Abonnements</h2>
-  <div class="subscriptions-grid">
+  <p class="profile-state" *ngIf="!loading && subscriptions.length === 0">Aucun abonnement pour le moment.</p>
+
+  <div class="subscriptions-grid" *ngIf="!loading && subscriptions.length > 0">
     <article class="subscription-card mdd-surface-card" *ngFor="let topic of subscriptions">
       <h3>{{ topic.name }}</h3>
       <p>{{ topic.description }}</p>
-      <button class="mdd-btn mdd-btn--primary unsubscribe-btn" type="button">Se désabonner</button>
+      <button
+        class="mdd-btn mdd-btn--primary unsubscribe-btn"
+        type="button"
+        [disabled]="pendingUnsubscribeTopicId === topic.id"
+        (click)="unsubscribe(topic)"
+      >
+        Se désabonner
+      </button>
     </article>
   </div>
 </section>
