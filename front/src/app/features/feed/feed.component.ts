@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,36 +15,35 @@ export class FeedComponent {
   samplePosts = [
     {
       id: 1,
-      title: 'Titre de l’article',
+      title: "Titre de l'article",
       author: 'Auteur',
       date: 'Date',
       excerpt:
-        "Content: lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard...",
+        "Contenu : lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard...",
     },
     {
       id: 2,
-      title: 'Titre de l’article',
+      title: "Titre de l'article",
       author: 'Auteur',
       date: 'Date',
       excerpt:
-        "Content: lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard...",
+        "Contenu : lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard...",
     },
     {
       id: 3,
-      title: 'Titre de l’article',
+      title: "Titre de l'article",
       author: 'Auteur',
       date: 'Date',
       excerpt:
-        "Content: lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard...",
+        "Contenu : lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard...",
     },
     {
       id: 4,
-      title: 'Titre de l’article',
+      title: "Titre de l'article",
       author: 'Auteur',
       date: 'Date',
       excerpt:
-        "Content: lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard...",
+        "Contenu : lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard...",
     },
   ];
 }
-

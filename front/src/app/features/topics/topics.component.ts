@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 
@@ -22,28 +22,28 @@ export class TopicsComponent {
       id: 1,
       name: 'Titre du thème',
       description:
-        "Description: lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard...",
+        "Description : lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard...",
       subscribed: false,
     },
     {
       id: 2,
       name: 'Titre du thème',
       description:
-        "Description: lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard...",
+        "Description : lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard...",
       subscribed: true,
     },
     {
       id: 3,
       name: 'Titre du thème',
       description:
-        "Description: lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard...",
+        "Description : lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard...",
       subscribed: true,
     },
     {
       id: 4,
       name: 'Titre du thème',
       description:
-        "Description: lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard...",
+        "Description : lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard...",
       subscribed: false,
     },
   ];
@@ -52,4 +52,3 @@ export class TopicsComponent {
     topic.subscribed = !topic.subscribed;
   }
 }
-

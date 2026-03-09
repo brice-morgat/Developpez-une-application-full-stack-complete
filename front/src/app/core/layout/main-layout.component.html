@@ -1,18 +1,18 @@
-<header class="app-topbar" *ngIf="showMainHeader">
-  <a class="logo-link" routerLink="/feed" aria-label="MDD home">
+﻿<header class="app-topbar" *ngIf="showMainHeader">
+  <a class="logo-link" routerLink="/feed" aria-label="Accueil MDD">
     <img src="assets/logo_p6.png" alt="MDD logo" />
   </a>
 
   <nav class="desktop-nav">
-    <button class="desktop-logout" type="button" (click)="logout()">Se déconnecter</button>
     <a routerLink="/feed" routerLinkActive="active">Articles</a>
     <a routerLink="/topics" routerLinkActive="active">Thèmes</a>
     <a routerLink="/profile" routerLinkActive="active" class="avatar-link" aria-label="Profil">
       <mat-icon>account_circle</mat-icon>
     </a>
+    <button class="desktop-logout" type="button" (click)="logout()">Se déconnecter</button>
   </nav>
 
-  <button class="mobile-menu-btn" type="button" (click)="toggleMobileMenu()" aria-label="Open menu">
+  <button class="mobile-menu-btn" type="button" (click)="toggleMobileMenu()" aria-label="Ouvrir le menu">
     <mat-icon>menu</mat-icon>
   </button>
 </header>
@@ -23,13 +23,16 @@
 
 <div class="mobile-overlay" *ngIf="mobileMenuOpen" (click)="closeMobileMenu()"></div>
 <aside class="mobile-drawer" *ngIf="mobileMenuOpen">
-  <button class="drawer-close" type="button" (click)="closeMobileMenu()" aria-label="Close menu">
-    <mat-icon>close</mat-icon>
-  </button>
-  <a routerLink="/feed" routerLinkActive="active" (click)="closeMobileMenu()">Articles</a>
-  <a routerLink="/topics" routerLinkActive="active" (click)="closeMobileMenu()">Thèmes</a>
-  <a routerLink="/profile" routerLinkActive="active" (click)="closeMobileMenu()">Profil</a>
-  <button class="logout-btn" type="button" (click)="logout()">Se déconnecter</button>
+  <nav class="mobile-nav">
+    <a routerLink="/feed" routerLinkActive="active" (click)="closeMobileMenu()">Articles</a>
+    <a routerLink="/topics" routerLinkActive="active" (click)="closeMobileMenu()">Thèmes</a>
+    <a routerLink="/profile" routerLinkActive="active" (click)="closeMobileMenu()">Profil</a>
+    <button class="logout-btn" type="button" (click)="logout()">Se déconnecter</button>
+  </nav>
+
+  <a routerLink="/profile" class="mobile-avatar-link" aria-label="Profil" (click)="closeMobileMenu()">
+    <mat-icon>account_circle</mat-icon>
+  </a>
 </aside>
 
 <main class="page-shell">
