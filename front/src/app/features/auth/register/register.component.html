@@ -19,9 +19,11 @@
         <input matInput type="password" formControlName="password" />
       </mat-form-field>
 
-      <p class="error" *ngIf="(error$ | async) as error">{{ error }}</p>
+      @if (error(); as errorMessage) {
+        <p class="error">{{ errorMessage }}</p>
+      }
 
-      <button class="register-btn" mat-raised-button color="primary" type="submit" [disabled]="form.invalid || (loading$ | async)">
+      <button class="register-btn" mat-raised-button color="primary" type="submit" [disabled]="form.invalid || loading()">
         S'inscrire
       </button>
     </form>

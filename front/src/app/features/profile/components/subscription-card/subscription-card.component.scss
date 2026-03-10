@@ -1,0 +1,21 @@
+.subscription-card {
+  gap: 0.55rem;
+}
+
+.subscription-card h3 {
+  margin: 0;
+}
+
+.subscription-card p {
+  margin: 0;
+  line-height: 1.35;
+}
+
+.unsubscribe-btn {
+  justify-self: center;
+  min-width: 10.4rem;
+}
+
+.unsubscribe-btn[disabled] {
+  opacity: 0.7;
+}

@@ -14,7 +14,3 @@ export class Logout {
   static readonly type = '[Auth] Logout';
 }
 
-export class RestoreSession {
-  static readonly type = '[Auth] Restore Session';
-}
-

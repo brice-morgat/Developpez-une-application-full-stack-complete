@@ -1,28 +1,40 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/auth/auth.guard';
 import { MainLayoutComponent } from './core/layout/main-layout.component';
-import { LoginComponent } from './features/auth/login/login.component';
-import { RegisterComponent } from './features/auth/register/register.component';
-import { WelcomeComponent } from './features/auth/welcome/welcome.component';
-import { FeedComponent } from './features/feed/feed.component';
-import { CreatePostComponent } from './features/posts/create-post/create-post.component';
-import { PostDetailComponent } from './features/posts/post-detail/post-detail.component';
-import { ProfileComponent } from './features/profile/profile.component';
-import { TopicsComponent } from './features/topics/topics.component';
 
 export const routes: Routes = [
   {
     path: '',
     component: MainLayoutComponent,
     children: [
-      { path: '', component: WelcomeComponent },
-      { path: 'login', component: LoginComponent },
-      { path: 'register', component: RegisterComponent },
-      { path: 'feed', component: FeedComponent, canActivate: [authGuard] },
-      { path: 'topics', component: TopicsComponent, canActivate: [authGuard] },
-      { path: 'post/:id', component: PostDetailComponent, canActivate: [authGuard] },
-      { path: 'create-post', component: CreatePostComponent, canActivate: [authGuard] },
-      { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
+      { path: '', loadComponent: () => import('./features/auth/welcome/welcome.component').then((m) => m.WelcomeComponent) },
+      { path: 'login', loadComponent: () => import('./features/auth/login/login.component').then((m) => m.LoginComponent) },
+      { path: 'register', loadComponent: () => import('./features/auth/register/register.component').then((m) => m.RegisterComponent) },
+      {
+        path: 'feed',
+        canActivate: [authGuard],
+        loadComponent: () => import('./features/feed/feed.component').then((m) => m.FeedComponent),
+      },
+      {
+        path: 'topics',
+        canActivate: [authGuard],
+        loadComponent: () => import('./features/topics/topics.component').then((m) => m.TopicsComponent),
+      },
+      {
+        path: 'post/:id',
+        canActivate: [authGuard],
+        loadComponent: () => import('./features/posts/post-detail/post-detail.component').then((m) => m.PostDetailComponent),
+      },
+      {
+        path: 'create-post',
+        canActivate: [authGuard],
+        loadComponent: () => import('./features/posts/create-post/create-post.component').then((m) => m.CreatePostComponent),
+      },
+      {
+        path: 'profile',
+        canActivate: [authGuard],
+        loadComponent: () => import('./features/profile/profile.component').then((m) => m.ProfileComponent),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

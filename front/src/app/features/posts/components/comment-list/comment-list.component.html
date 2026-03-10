@@ -1,0 +1,8 @@
+<section class="comments-list">
+  @for (comment of comments(); track comment.id) {
+    <article class="comment-row">
+      <span class="comment-author">{{ comment.author.username }}</span>
+      <p class="comment-bubble">{{ comment.content }}</p>
+    </article>
+  }
+</section>

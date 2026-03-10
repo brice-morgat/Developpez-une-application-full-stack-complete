@@ -1,82 +1,30 @@
-﻿import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { finalize } from 'rxjs';
-import { TopicResponse } from '../../core/api/topics.models';
-import { TopicsService } from '../../core/api/topics.service';
-
-interface TopicViewModel extends TopicResponse {
-  description: string;
-}
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { TopicCardComponent } from './components/topic-card/topic-card.component';
+import { TopicViewModel, TopicSubscriptionService } from './services/topic-subscription.service';
 
 @Component({
   selector: 'app-topics',
   standalone: true,
-  imports: [CommonModule, MatButtonModule],
+  providers: [TopicSubscriptionService],
+  imports: [CommonModule, TopicCardComponent],
   templateUrl: './topics.component.html',
   styleUrls: ['./topics.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TopicsComponent implements OnInit {
-  private readonly topicsService = inject(TopicsService);
+  private readonly topicSubscriptionService = inject(TopicSubscriptionService);
 
-  topics: TopicViewModel[] = [];
-  loading = true;
-  errorMessage: string | null = null;
-  pendingTopicId: number | null = null;
+  protected readonly topics = this.topicSubscriptionService.topics;
+  protected readonly loading = this.topicSubscriptionService.loading;
+  protected readonly errorMessage = this.topicSubscriptionService.errorMessage;
+  protected readonly pendingTopicId = this.topicSubscriptionService.pendingTopicId;
 
   ngOnInit(): void {
-    this.loadTopics();
+    this.topicSubscriptionService.loadTopics();
   }
 
-  toggleSubscription(topic: TopicViewModel): void {
-    if (this.pendingTopicId !== null) {
-      return;
-    }
-
-    this.pendingTopicId = topic.id;
-    this.errorMessage = null;
-
-    const request$ = topic.subscribed
-      ? this.topicsService.unsubscribe(topic.id)
-      : this.topicsService.subscribe(topic.id);
-
-    request$
-      .pipe(
-        finalize(() => {
-          this.pendingTopicId = null;
-        })
-      )
-      .subscribe({
-        next: () => {
-          topic.subscribed = !topic.subscribed;
-        },
-        error: () => {
-          this.errorMessage = "Impossible de mettre à jour l'abonnement.";
-        },
-      });
-  }
-
-  private loadTopics(): void {
-    this.loading = true;
-    this.errorMessage = null;
-
-    this.topicsService
-      .getTopics()
-      .pipe(
-        finalize(() => {
-          this.loading = false;
-        })
-      )
-      .subscribe({
-        next: (topics) => {
-          this.topics = topics.map((topic) => ({
-            ...topic,
-            description: `Retrouvez les derniers articles autour de ${topic.name}.`,
-          }));
-        },
-        error: () => {
-          this.errorMessage = 'Impossible de charger les thèmes.';
-        },
-      });
+  protected toggleSubscription(topic: TopicViewModel): void {
+    this.topicSubscriptionService.toggleSubscription(topic);
   }
 }

@@ -1,44 +1,32 @@
-﻿<section class="post-detail-screen" *ngIf="!loading && post; else loadingOrError">
-  <header class="post-heading">
-    <a class="back-link" routerLink="/feed" aria-label="Retour aux articles">
-      <mat-icon>arrow_back</mat-icon>
-    </a>
-    <h1>{{ post.title }}</h1>
-  </header>
+@if (!loading() && post()) {
+  <section class="post-detail-screen">
+    <header class="post-heading">
+      <a class="back-link" routerLink="/feed" aria-label="Retour aux articles">
+        <mat-icon>arrow_back</mat-icon>
+      </a>
+      <h1>{{ post()!.title }}</h1>
+    </header>
 
-  <div class="post-meta">
-    <span>{{ post.createdAt | date : 'dd/MM/yyyy' }}</span>
-    <span>{{ post.author.username }}</span>
-    <span>{{ post.topic.name }}</span>
-  </div>
+    <div class="post-meta">
+      <span>{{ post()!.createdAt | date : 'dd/MM/yyyy' }}</span>
+      <span>{{ post()!.author.username }}</span>
+      <span>{{ post()!.topic.name }}</span>
+    </div>
 
-  <p class="post-content">{{ post.content }}</p>
+    <p class="post-content">{{ post()!.content }}</p>
 
-  <hr class="separator" />
+    <hr class="separator" />
 
-  <section class="comments-list">
-    <article class="comment-row" *ngFor="let comment of post.comments">
-      <span class="comment-author">{{ comment.author.username }}</span>
-      <p class="comment-bubble">{{ comment.content }}</p>
-    </article>
+    <app-comment-list [comments]="post()!.comments"></app-comment-list>
+
+    <app-comment-form [submitting]="submitting()" (submitComment)="submitComment($event)"></app-comment-form>
   </section>
-
-  <form class="comment-form" [formGroup]="commentForm" (ngSubmit)="submitComment()">
-    <textarea
-      formControlName="content"
-      rows="3"
-      placeholder="Écrivez ici votre commentaire"
-      aria-label="Votre commentaire"
-    ></textarea>
-    <button class="send-btn" type="submit" [disabled]="submitting" aria-label="Envoyer le commentaire">
-      <mat-icon>send</mat-icon>
-    </button>
-  </form>
-</section>
-
-<ng-template #loadingOrError>
+} @else {
   <section class="post-state">
-    <p *ngIf="loading">Chargement de l'article...</p>
-    <p *ngIf="!loading && errorMessage">{{ errorMessage }}</p>
+    @if (loading()) {
+      <p>Chargement de l'article...</p>
+    } @else if (errorMessage()) {
+      <p>{{ errorMessage() }}</p>
+    }
   </section>
-</ng-template>
+}

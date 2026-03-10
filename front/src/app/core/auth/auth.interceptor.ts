@@ -1,10 +1,16 @@
 import { HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { Store } from '@ngxs/store';
+import { AuthState } from './auth.state';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const token = localStorage.getItem('mdd_token');
+  const store = inject(Store);
+  const token = store.selectSnapshot(AuthState.token);
+
   if (!token) {
     return next(req);
   }
+
   return next(
     req.clone({
       setHeaders: {
@@ -13,4 +19,3 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     })
   );
 };
-

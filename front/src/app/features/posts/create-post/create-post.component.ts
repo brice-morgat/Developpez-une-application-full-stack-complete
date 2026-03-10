@@ -1,5 +1,5 @@
-﻿import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,14 +7,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterLink } from '@angular/router';
-import { finalize } from 'rxjs';
-import { PostsService } from '../../../core/api/posts.service';
-import { TopicResponse } from '../../../core/api/topics.models';
-import { TopicsService } from '../../../core/api/topics.service';
+import { CreatePostPayloadView, PostCreationService } from '../services/post-creation.service';
 
 @Component({
   selector: 'app-create-post',
   standalone: true,
+  providers: [PostCreationService],
   imports: [
     CommonModule,
     RouterLink,
@@ -27,74 +25,46 @@ import { TopicsService } from '../../../core/api/topics.service';
   ],
   templateUrl: './create-post.component.html',
   styleUrls: ['./create-post.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreatePostComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
-  private readonly topicsService = inject(TopicsService);
-  private readonly postsService = inject(PostsService);
   private readonly router = inject(Router);
+  private readonly postCreationService = inject(PostCreationService);
 
-  topics: TopicResponse[] = [];
-  loadingTopics = true;
-  submitting = false;
-  errorMessage: string | null = null;
+  protected readonly topics = this.postCreationService.topics;
+  protected readonly loadingTopics = this.postCreationService.loadingTopics;
+  protected readonly submitting = this.postCreationService.submitting;
+  protected readonly errorMessage = this.postCreationService.errorMessage;
 
-  readonly form = this.fb.group({
-    topicId: [null as number | null, [Validators.required]],
-    title: ['', [Validators.required, Validators.maxLength(200)]],
-    content: ['', [Validators.required, Validators.maxLength(5000)]],
+  protected readonly form = this.fb.group({
+    topicId: this.fb.control<number | null>(null, [Validators.required]),
+    title: this.fb.nonNullable.control('', [Validators.required, Validators.maxLength(200)]),
+    content: this.fb.nonNullable.control('', [Validators.required, Validators.maxLength(5000)]),
   });
 
   ngOnInit(): void {
-    this.topicsService
-      .getTopics()
-      .pipe(
-        finalize(() => {
-          this.loadingTopics = false;
-        })
-      )
-      .subscribe({
-        next: (topics) => {
-          this.topics = topics;
-        },
-        error: () => {
-          this.errorMessage = 'Impossible de charger la liste des thèmes.';
-        },
-      });
+    this.postCreationService.loadTopics();
   }
 
-  submit(): void {
-    if (this.form.invalid || this.submitting) {
+  protected submit(): void {
+    if (this.form.invalid || this.submitting()) {
       this.form.markAllAsTouched();
       return;
     }
 
     const topicId = this.form.controls.topicId.value;
-    const title = this.form.controls.title.value?.trim() ?? '';
-    const content = this.form.controls.content.value?.trim() ?? '';
+    const title = this.form.controls.title.value.trim();
+    const content = this.form.controls.content.value.trim();
 
     if (!topicId || !title || !content) {
       this.form.markAllAsTouched();
       return;
     }
 
-    this.errorMessage = null;
-    this.submitting = true;
-
-    this.postsService
-      .createPost({ topicId, title, content })
-      .pipe(
-        finalize(() => {
-          this.submitting = false;
-        })
-      )
-      .subscribe({
-        next: (post) => {
-          this.router.navigate(['/post', post.id]);
-        },
-        error: () => {
-          this.errorMessage = "Impossible de créer l'article.";
-        },
-      });
+    const payload: CreatePostPayloadView = { topicId, title, content };
+    this.postCreationService.createPost(payload, (post) => {
+      void this.router.navigate(['/post', post.id]);
+    });
   }
 }

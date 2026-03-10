@@ -1,48 +1,53 @@
-﻿<section class="profile-screen">
+<section class="profile-screen">
   <h1>Profil utilisateur</h1>
 
-  <p class="profile-state" *ngIf="loading">Chargement du profil...</p>
-  <p class="profile-state profile-state--error" *ngIf="!loading && errorMessage">{{ errorMessage }}</p>
-  <p class="profile-state profile-state--success" *ngIf="!loading && successMessage">{{ successMessage }}</p>
+  @if (loading()) {
+    <p class="profile-state">Chargement du profil...</p>
+  } @else {
+    @if (errorMessage()) {
+      <p class="profile-state profile-state--error">{{ errorMessage() }}</p>
+    }
+    @if (successMessage()) {
+      <p class="profile-state profile-state--success">{{ successMessage() }}</p>
+    }
 
-  <form [formGroup]="form" (ngSubmit)="save()" class="profile-form" *ngIf="!loading">
-    <mat-form-field appearance="outline">
-      <mat-label>Nom d'utilisateur</mat-label>
-      <input matInput formControlName="username" />
-    </mat-form-field>
+    <form [formGroup]="form" (ngSubmit)="save()" class="profile-form">
+      <mat-form-field appearance="outline">
+        <mat-label>Nom d'utilisateur</mat-label>
+        <input matInput formControlName="username" />
+      </mat-form-field>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Adresse e-mail</mat-label>
-      <input matInput formControlName="email" />
-    </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Adresse e-mail</mat-label>
+        <input matInput formControlName="email" />
+      </mat-form-field>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Mot de passe</mat-label>
-      <input matInput type="password" formControlName="password" />
-    </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Mot de passe</mat-label>
+        <input matInput type="password" formControlName="password" />
+      </mat-form-field>
 
-    <button mat-flat-button type="submit" class="mdd-btn mdd-btn--primary save-btn" [disabled]="saving">
-      Sauvegarder
-    </button>
-  </form>
-
-  <hr class="profile-separator" />
-
-  <h2>Abonnements</h2>
-  <p class="profile-state" *ngIf="!loading && subscriptions.length === 0">Aucun abonnement pour le moment.</p>
-
-  <div class="subscriptions-grid" *ngIf="!loading && subscriptions.length > 0">
-    <article class="subscription-card mdd-surface-card" *ngFor="let topic of subscriptions">
-      <h3>{{ topic.name }}</h3>
-      <p>{{ topic.description }}</p>
-      <button
-        class="mdd-btn mdd-btn--primary unsubscribe-btn"
-        type="button"
-        [disabled]="pendingUnsubscribeTopicId === topic.id"
-        (click)="unsubscribe(topic)"
-      >
-        Se désabonner
+      <button mat-flat-button type="submit" class="mdd-btn mdd-btn--primary save-btn" [disabled]="saving()">
+        Sauvegarder
       </button>
-    </article>
-  </div>
+    </form>
+
+    <hr class="profile-separator" />
+
+    <h2>Abonnements</h2>
+
+    @if (subscriptions().length === 0) {
+      <p class="profile-state">Aucun abonnement pour le moment.</p>
+    } @else {
+      <div class="subscriptions-grid">
+        @for (topic of subscriptions(); track topic.id) {
+          <app-subscription-card
+            [topic]="topic"
+            [pending]="pendingUnsubscribeTopicId() === topic.id"
+            (unsubscribe)="unsubscribe($event)"
+          ></app-subscription-card>
+        }
+      </div>
+    }
+  }
 </section>
