@@ -1,4 +1,4 @@
-﻿<section class="create-post-screen">
+<section class="create-post-screen">
   <header class="create-post-header">
     <a class="back-link" routerLink="/feed" aria-label="Retour aux articles">
       <mat-icon>arrow_back</mat-icon>
@@ -9,8 +9,10 @@
   <form class="create-post-form" [formGroup]="form" (ngSubmit)="submit()">
     <mat-form-field appearance="outline">
       <mat-label>Sélectionner un thème</mat-label>
-      <mat-select formControlName="topicId" [disabled]="loadingTopics">
-        <mat-option *ngFor="let topic of topics" [value]="topic.id">{{ topic.name }}</mat-option>
+      <mat-select formControlName="topicId" [disabled]="loadingTopics()">
+        @for (topic of topics(); track topic.id) {
+          <mat-option [value]="topic.id">{{ topic.name }}</mat-option>
+        }
       </mat-select>
     </mat-form-field>
 
@@ -24,10 +26,12 @@
       <textarea matInput formControlName="content" rows="8"></textarea>
     </mat-form-field>
 
-    <button mat-flat-button type="submit" class="mdd-btn mdd-btn--primary submit-btn" [disabled]="submitting">
+    <button mat-flat-button type="submit" class="mdd-btn mdd-btn--primary submit-btn" [disabled]="submitting()">
       Créer
     </button>
 
-    <p class="create-post-error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    @if (errorMessage()) {
+      <p class="create-post-error">{{ errorMessage() }}</p>
+    }
   </form>
 </section>

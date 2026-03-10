@@ -1,39 +1,45 @@
-﻿<header class="app-topbar" *ngIf="showMainHeader">
-  <a class="logo-link" routerLink="/feed" aria-label="Accueil MDD">
-    <img src="assets/logo_p6.png" alt="MDD logo" />
-  </a>
+@if (showMainHeader) {
+  <header class="app-topbar">
+    <a class="logo-link" routerLink="/feed" aria-label="Accueil MDD">
+      <img src="assets/logo_p6.png" alt="MDD logo" />
+    </a>
 
-  <nav class="desktop-nav">
-    <a routerLink="/feed" routerLinkActive="active">Articles</a>
-    <a routerLink="/topics" routerLinkActive="active">Thèmes</a>
-    <a routerLink="/profile" routerLinkActive="active" class="avatar-link" aria-label="Profil">
+    <nav class="desktop-nav">
+      <a routerLink="/feed" routerLinkActive="active">Articles</a>
+      <a routerLink="/topics" routerLinkActive="active">Thèmes</a>
+      <a routerLink="/profile" routerLinkActive="active" class="avatar-link" aria-label="Profil">
+        <mat-icon>account_circle</mat-icon>
+      </a>
+      <button class="desktop-logout" type="button" (click)="logout()">Se déconnecter</button>
+    </nav>
+
+    <button class="mobile-menu-btn" type="button" (click)="toggleMobileMenu()" aria-label="Ouvrir le menu">
+      <mat-icon>menu</mat-icon>
+    </button>
+  </header>
+}
+
+@if (showAuthHeader) {
+  <header class="auth-topbar">
+    <img src="assets/logo_p6.png" alt="MDD logo" />
+  </header>
+}
+
+@if (mobileMenuOpen) {
+  <div class="mobile-overlay" (click)="closeMobileMenu()"></div>
+  <aside class="mobile-drawer">
+    <nav class="mobile-nav">
+      <a routerLink="/feed" routerLinkActive="active" (click)="closeMobileMenu()">Articles</a>
+      <a routerLink="/topics" routerLinkActive="active" (click)="closeMobileMenu()">Thèmes</a>
+      <a routerLink="/profile" routerLinkActive="active" (click)="closeMobileMenu()">Profil</a>
+      <button class="logout-btn" type="button" (click)="logout()">Se déconnecter</button>
+    </nav>
+
+    <a routerLink="/profile" class="mobile-avatar-link" aria-label="Profil" (click)="closeMobileMenu()">
       <mat-icon>account_circle</mat-icon>
     </a>
-    <button class="desktop-logout" type="button" (click)="logout()">Se déconnecter</button>
-  </nav>
-
-  <button class="mobile-menu-btn" type="button" (click)="toggleMobileMenu()" aria-label="Ouvrir le menu">
-    <mat-icon>menu</mat-icon>
-  </button>
-</header>
-
-<header class="auth-topbar" *ngIf="showAuthHeader">
-  <img src="assets/logo_p6.png" alt="MDD logo" />
-</header>
-
-<div class="mobile-overlay" *ngIf="mobileMenuOpen" (click)="closeMobileMenu()"></div>
-<aside class="mobile-drawer" *ngIf="mobileMenuOpen">
-  <nav class="mobile-nav">
-    <a routerLink="/feed" routerLinkActive="active" (click)="closeMobileMenu()">Articles</a>
-    <a routerLink="/topics" routerLinkActive="active" (click)="closeMobileMenu()">Thèmes</a>
-    <a routerLink="/profile" routerLinkActive="active" (click)="closeMobileMenu()">Profil</a>
-    <button class="logout-btn" type="button" (click)="logout()">Se déconnecter</button>
-  </nav>
-
-  <a routerLink="/profile" class="mobile-avatar-link" aria-label="Profil" (click)="closeMobileMenu()">
-    <mat-icon>account_circle</mat-icon>
-  </a>
-</aside>
+  </aside>
+}
 
 <main class="page-shell">
   <router-outlet></router-outlet>
