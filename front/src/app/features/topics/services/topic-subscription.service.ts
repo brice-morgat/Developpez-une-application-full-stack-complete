@@ -3,9 +3,7 @@ import { finalize } from 'rxjs';
 import { TopicResponse } from '../../../core/api/topics.models';
 import { TopicsService } from '../../../core/api/topics.service';
 
-export interface TopicViewModel extends TopicResponse {
-  description: string;
-}
+export interface TopicViewModel extends TopicResponse {}
 
 @Injectable()
 export class TopicSubscriptionService {
@@ -34,7 +32,7 @@ export class TopicSubscriptionService {
       )
       .subscribe({
         next: (topics) => {
-          this._topics.set(this.toTopicsViewModel(topics));
+          this._topics.set(topics);
         },
         error: () => {
           this._errorMessage.set('Impossible de charger les thèmes.');
@@ -73,12 +71,4 @@ export class TopicSubscriptionService {
         },
       });
   }
-
-  private toTopicsViewModel(topics: TopicResponse[]): TopicViewModel[] {
-    return topics.map((topic) => ({
-      ...topic,
-      description: `Retrouvez les derniers articles autour de ${topic.name}.`,
-    }));
-  }
 }
-

@@ -11,14 +11,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -28,6 +29,18 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ApiErrorDto> handleNotFound(
       ResourceNotFoundException exception, HttpServletRequest request) {
     return buildResponse(HttpStatus.NOT_FOUND, exception.getMessage(), request, null);
+  }
+
+  @ExceptionHandler(NoResourceFoundException.class)
+  public ResponseEntity<ApiErrorDto> handleNoResourceFound(
+      NoResourceFoundException exception, HttpServletRequest request) {
+    return buildResponse(HttpStatus.NOT_FOUND, "Ressource introuvable.", request, null);
+  }
+
+  @ExceptionHandler(ForbiddenOperationException.class)
+  public ResponseEntity<ApiErrorDto> handleForbiddenOperation(
+      ForbiddenOperationException exception, HttpServletRequest request) {
+    return buildResponse(HttpStatus.FORBIDDEN, exception.getMessage(), request, null);
   }
 
   @ExceptionHandler({MethodArgumentNotValidException.class, ConstraintViolationException.class})
@@ -96,7 +109,10 @@ public class GlobalExceptionHandler {
           .collect(
               Collectors.toMap(
                   FieldError::getField,
-                  fieldError -> fieldError.getDefaultMessage() == null ? "Valeur invalide" : fieldError.getDefaultMessage(),
+                  fieldError ->
+                      fieldError.getDefaultMessage() == null
+                          ? "Valeur invalide"
+                          : fieldError.getDefaultMessage(),
                   (left, right) -> left));
     }
 
@@ -105,7 +121,8 @@ public class GlobalExceptionHandler {
           .collect(
               Collectors.toMap(
                   violation -> violation.getPropertyPath().toString(),
-                  violation -> violation.getMessage() == null ? "Valeur invalide" : violation.getMessage(),
+                  violation ->
+                      violation.getMessage() == null ? "Valeur invalide" : violation.getMessage(),
                   (left, right) -> left));
     }
 

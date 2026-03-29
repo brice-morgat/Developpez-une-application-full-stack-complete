@@ -1,5 +1,7 @@
-﻿import { Injectable, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Injectable, signal } from '@angular/core';
 import { finalize } from 'rxjs';
+import { ApiError } from '../../../core/api/api-error.model';
 import { FeedPost } from '../../../core/api/posts.models';
 import { PostsService } from '../../../core/api/posts.service';
 import { TopicResponse } from '../../../core/api/topics.models';
@@ -65,10 +67,27 @@ export class PostCreationService {
         next: (post) => {
           onSuccess(post);
         },
-        error: () => {
-          this._errorMessage.set("Impossible de créer l'article.");
+        error: (error: unknown) => {
+          this._errorMessage.set(this.extractErrorMessage(error));
         },
       });
   }
-}
 
+  private extractErrorMessage(error: unknown): string {
+    if (error instanceof HttpErrorResponse) {
+      const payload = error.error as ApiError | string | null;
+      if (payload && typeof payload === 'object') {
+        const explicitMessage = payload.message?.trim();
+        if (explicitMessage) {
+          return explicitMessage;
+        }
+      }
+
+      if (typeof payload === 'string' && payload.trim()) {
+        return payload;
+      }
+    }
+
+    return "Impossible de créer l'article.";
+  }
+}

@@ -23,7 +23,8 @@ class TopicControllerTest {
 
   @Test
   void listTopics_shouldReturnServiceValue() {
-    when(topicService.getTopicsForCurrentUser()).thenReturn(List.of(new TopicResponseDto(1L, "Java", true)));
+    when(topicService.getTopicsForCurrentUser())
+        .thenReturn(List.of(new TopicResponseDto(1L, "Java", "Java desc", true)));
 
     List<TopicResponseDto> result = topicController.listTopics();
 

@@ -1,4 +1,5 @@
-﻿import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { HttpErrorResponse } from '@angular/common/http';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { PostsService } from '../../../core/api/posts.service';
 import { TopicsService } from '../../../core/api/topics.service';
@@ -25,7 +26,7 @@ describe('PostCreationService', () => {
   });
 
   it('should load topics', fakeAsync(() => {
-    topicsApi.getTopics.and.returnValue(of([{ id: 1, name: 'Java', subscribed: false }]));
+    topicsApi.getTopics.and.returnValue(of([{ id: 1, name: 'Java', description: 'Java desc', subscribed: false }]));
 
     service.loadTopics();
     tick();
@@ -52,7 +53,7 @@ describe('PostCreationService', () => {
         content: 'C',
         createdAt: '2026-01-01',
         author: { id: 1, username: 'alice' },
-        topic: { id: 1, name: 'Java' },
+        topic: { id: 1, name: 'Java', description: 'Java desc' },
       })
     );
 
@@ -71,7 +72,19 @@ describe('PostCreationService', () => {
     expect(postsApi.createPost).not.toHaveBeenCalled();
   });
 
-  it('should expose error when create post fails', fakeAsync(() => {
+  it('should expose backend error when create post fails', fakeAsync(() => {
+    postsApi.createPost.and.returnValue(
+      throwError(() => new HttpErrorResponse({ status: 403, error: { message: 'Vous devez être abonné au thème pour publier un article.' } }))
+    );
+
+    service.createPost({ topicId: 1, title: 'T', content: 'C' }, () => undefined);
+    tick();
+
+    expect(service.errorMessage()).toBe('Vous devez être abonné au thème pour publier un article.');
+    expect(service.submitting()).toBeFalse();
+  }));
+
+  it('should fallback to default error when backend payload is missing', fakeAsync(() => {
     postsApi.createPost.and.returnValue(throwError(() => new Error('boom')));
 
     service.createPost({ topicId: 1, title: 'T', content: 'C' }, () => undefined);

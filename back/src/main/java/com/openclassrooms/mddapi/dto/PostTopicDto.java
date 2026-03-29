@@ -1,4 +1,4 @@
 package com.openclassrooms.mddapi.dto;
 
-public record PostTopicDto(Long id, String name) {}
+public record PostTopicDto(Long id, String name, String description) {}
 

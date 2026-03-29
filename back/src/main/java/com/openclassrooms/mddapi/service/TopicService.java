@@ -8,12 +8,11 @@ import com.openclassrooms.mddapi.model.User;
 import com.openclassrooms.mddapi.repository.SubscriptionRepository;
 import com.openclassrooms.mddapi.repository.TopicRepository;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -40,7 +39,13 @@ public class TopicService {
             .collect(Collectors.toSet());
 
     return topicRepository.findAll().stream()
-        .map(topic -> new TopicResponseDto(topic.getId(), topic.getName(), subscribedTopicIds.contains(topic.getId())))
+        .map(
+            topic ->
+                new TopicResponseDto(
+                    topic.getId(),
+                    topic.getName(),
+                    topic.getDescription(),
+                    subscribedTopicIds.contains(topic.getId())))
         .toList();
   }
 
@@ -48,7 +53,9 @@ public class TopicService {
   public void subscribe(Long topicId) {
     User user = currentUserService.getCurrentUser();
     Topic topic =
-        topicRepository.findById(topicId).orElseThrow(() -> new ResourceNotFoundException("Thème introuvable."));
+        topicRepository
+            .findById(topicId)
+            .orElseThrow(() -> new ResourceNotFoundException("Thème introuvable."));
 
     if (!subscriptionRepository.existsByUserIdAndTopicId(user.getId(), topicId)) {
       subscriptionRepository.save(
@@ -65,4 +72,3 @@ public class TopicService {
     subscriptionRepository.deleteByUserIdAndTopicId(user.getId(), topicId);
   }
 }
-

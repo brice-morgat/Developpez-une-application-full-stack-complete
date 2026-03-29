@@ -28,8 +28,8 @@ describe('ProfileSettingsService', () => {
     usersApi.me.and.returnValue(of({ id: 1, username: 'alice', email: 'a@a.fr', subscriptions: [2] }));
     topicsApi.getTopics.and.returnValue(
       of([
-        { id: 1, name: 'Java', subscribed: false },
-        { id: 2, name: 'Angular', subscribed: true },
+        { id: 1, name: 'Java', description: 'Java desc', subscribed: false },
+        { id: 2, name: 'Angular', description: 'Angular desc', subscribed: true },
       ])
     );
 
@@ -40,6 +40,7 @@ describe('ProfileSettingsService', () => {
     expect(service.profile()?.username).toBe('alice');
     expect(service.subscriptions().length).toBe(1);
     expect(service.subscriptions()[0].id).toBe(2);
+    expect(service.subscriptions()[0].description).toBe('Angular desc');
   }));
 
   it('should expose error when loading profile fails', fakeAsync(() => {

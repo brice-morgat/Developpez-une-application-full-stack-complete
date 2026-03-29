@@ -33,8 +33,8 @@ class TopicServiceTest {
   @Test
   void getTopicsForCurrentUser_shouldSetSubscribedFlag() {
     User user = User.builder().id(1L).username("alice").build();
-    Topic t1 = Topic.builder().id(10L).name("Java").build();
-    Topic t2 = Topic.builder().id(11L).name("Angular").build();
+    Topic t1 = Topic.builder().id(10L).name("Java").description("Java desc").build();
+    Topic t2 = Topic.builder().id(11L).name("Angular").description("Angular desc").build();
 
     when(currentUserService.getCurrentUser()).thenReturn(user);
     when(topicRepository.findAll()).thenReturn(List.of(t1, t2));
@@ -44,6 +44,7 @@ class TopicServiceTest {
     var result = topicService.getTopicsForCurrentUser();
 
     assertThat(result).hasSize(2);
+    assertThat(result.get(0).description()).isEqualTo("Java desc");
     assertThat(result.get(0).subscribed()).isFalse();
     assertThat(result.get(1).subscribed()).isTrue();
   }

@@ -17,14 +17,16 @@ describe('TopicSubscriptionService', () => {
     service = TestBed.inject(TopicSubscriptionService);
   });
 
-  it('should load topics and enrich with description', fakeAsync(() => {
-    topicsApi.getTopics.and.returnValue(of([{ id: 1, name: 'Java', subscribed: false }]));
+  it('should load topics with API description', fakeAsync(() => {
+    topicsApi.getTopics.and.returnValue(
+      of([{ id: 1, name: 'Java', description: 'Java backend ecosystem', subscribed: false }])
+    );
 
     service.loadTopics();
     tick();
 
     expect(service.loading()).toBeFalse();
-    expect(service.topics()[0].description).toContain('Java');
+    expect(service.topics()[0].description).toBe('Java backend ecosystem');
   }));
 
   it('should set error when load topics fails', fakeAsync(() => {
@@ -37,7 +39,7 @@ describe('TopicSubscriptionService', () => {
   }));
 
   it('should subscribe when topic is not subscribed', fakeAsync(() => {
-    const topic: TopicViewModel = { id: 1, name: 'Java', subscribed: false, description: 'd' };
+    const topic: TopicViewModel = { id: 1, name: 'Java', description: 'd', subscribed: false };
     (service as any)._topics.set([topic]);
     topicsApi.subscribe.and.returnValue(of(void 0));
 
@@ -50,7 +52,7 @@ describe('TopicSubscriptionService', () => {
   }));
 
   it('should unsubscribe when topic is subscribed', fakeAsync(() => {
-    const topic: TopicViewModel = { id: 1, name: 'Java', subscribed: true, description: 'd' };
+    const topic: TopicViewModel = { id: 1, name: 'Java', description: 'd', subscribed: true };
     (service as any)._topics.set([topic]);
     topicsApi.unsubscribe.and.returnValue(of(void 0));
 
@@ -62,7 +64,7 @@ describe('TopicSubscriptionService', () => {
   }));
 
   it('should ignore toggle when another topic is pending', () => {
-    const topic: TopicViewModel = { id: 2, name: 'Angular', subscribed: false, description: 'd' };
+    const topic: TopicViewModel = { id: 2, name: 'Angular', description: 'd', subscribed: false };
     (service as any)._pendingTopicId.set(1);
 
     service.toggleSubscription(topic);
@@ -72,7 +74,7 @@ describe('TopicSubscriptionService', () => {
   });
 
   it('should set error when toggle fails', fakeAsync(() => {
-    const topic: TopicViewModel = { id: 1, name: 'Java', subscribed: false, description: 'd' };
+    const topic: TopicViewModel = { id: 1, name: 'Java', description: 'd', subscribed: false };
     (service as any)._topics.set([topic]);
     topicsApi.subscribe.and.returnValue(throwError(() => new Error('boom')));
 

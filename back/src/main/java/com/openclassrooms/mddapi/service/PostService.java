@@ -1,12 +1,8 @@
 package com.openclassrooms.mddapi.service;
 
-import com.openclassrooms.mddapi.dto.CommentDto;
 import com.openclassrooms.mddapi.dto.CreateCommentRequestDto;
 import com.openclassrooms.mddapi.dto.CreatePostRequestDto;
-import com.openclassrooms.mddapi.dto.FeedPostDto;
-import com.openclassrooms.mddapi.dto.PostAuthorDto;
-import com.openclassrooms.mddapi.dto.PostDetailDto;
-import com.openclassrooms.mddapi.dto.PostTopicDto;
+import com.openclassrooms.mddapi.exception.ForbiddenOperationException;
 import com.openclassrooms.mddapi.exception.ResourceNotFoundException;
 import com.openclassrooms.mddapi.model.Comment;
 import com.openclassrooms.mddapi.model.Post;
@@ -45,7 +41,7 @@ public class PostService {
     this.currentUserService = currentUserService;
   }
 
-  public List<FeedPostDto> getFeed(String sort) {
+  public List<Post> getFeed(String sort) {
     User user = currentUserService.getCurrentUser();
     List<Long> topicIds =
         subscriptionRepository.findAllByUserId(user.getId()).stream()
@@ -61,16 +57,23 @@ public class PostService {
       comparator = comparator.reversed();
     }
 
-    return postRepository.findAllByTopicIdIn(topicIds).stream().sorted(comparator).map(this::toFeedDto).toList();
+    return postRepository.findAllByTopicIdIn(topicIds).stream()
+        .sorted(comparator)
+        .peek(this::initializePostRelations)
+        .toList();
   }
 
   @Transactional
-  public FeedPostDto createPost(CreatePostRequestDto request) {
+  public Post createPost(CreatePostRequestDto request) {
     User author = currentUserService.getCurrentUser();
     Topic topic =
         topicRepository
             .findById(request.topicId())
             .orElseThrow(() -> new ResourceNotFoundException("Thème introuvable."));
+
+    if (!subscriptionRepository.existsByUserIdAndTopicId(author.getId(), topic.getId())) {
+      throw new ForbiddenOperationException("Vous devez être abonné au thème pour publier un article.");
+    }
 
     Post post =
         postRepository.save(
@@ -81,36 +84,22 @@ public class PostService {
                 .topic(topic)
                 .createdAt(LocalDateTime.now())
                 .build());
-
-    return toFeedDto(post);
+    initializePostRelations(post);
+    return post;
   }
 
-  public PostDetailDto getPostWithComments(Long postId) {
-    Post post =
-        postRepository
-            .findById(postId)
-            .orElseThrow(() -> new ResourceNotFoundException("Article introuvable."));
-
-    List<CommentDto> comments =
-        commentRepository.findAllByPostIdOrderByCreatedAtAsc(postId).stream().map(this::toCommentDto).toList();
-
-    return new PostDetailDto(
-        post.getId(),
-        post.getTitle(),
-        post.getContent(),
-        toAuthorDto(post.getAuthor()),
-        toTopicDto(post.getTopic()),
-        post.getCreatedAt(),
-        comments);
+  public PostWithComments getPostWithComments(Long postId) {
+    Post post = findPostById(postId);
+    List<Comment> comments = findCommentsByPostId(postId);
+    initializePostRelations(post);
+    comments.forEach(this::initializeCommentRelations);
+    return new PostWithComments(post, comments);
   }
 
   @Transactional
-  public CommentDto addComment(Long postId, CreateCommentRequestDto request) {
+  public Comment addComment(Long postId, CreateCommentRequestDto request) {
     User author = currentUserService.getCurrentUser();
-    Post post =
-        postRepository
-            .findById(postId)
-            .orElseThrow(() -> new ResourceNotFoundException("Article introuvable."));
+    Post post = findPostById(postId);
 
     Comment comment =
         commentRepository.save(
@@ -120,30 +109,28 @@ public class PostService {
                 .content(request.content().trim())
                 .createdAt(LocalDateTime.now())
                 .build());
-
-    return toCommentDto(comment);
+    initializeCommentRelations(comment);
+    return comment;
   }
 
-  private FeedPostDto toFeedDto(Post post) {
-    return new FeedPostDto(
-        post.getId(),
-        post.getTitle(),
-        post.getContent(),
-        toAuthorDto(post.getAuthor()),
-        toTopicDto(post.getTopic()),
-        post.getCreatedAt());
+  private Post findPostById(Long postId) {
+    return postRepository
+        .findById(postId)
+        .orElseThrow(() -> new ResourceNotFoundException("Article introuvable."));
   }
 
-  private CommentDto toCommentDto(Comment comment) {
-    return new CommentDto(
-        comment.getId(), comment.getContent(), toAuthorDto(comment.getAuthor()), comment.getCreatedAt());
+  private List<Comment> findCommentsByPostId(Long postId) {
+    return commentRepository.findAllByPostIdOrderByCreatedAtAsc(postId);
   }
 
-  private PostAuthorDto toAuthorDto(User user) {
-    return new PostAuthorDto(user.getId(), user.getUsername());
+  private void initializePostRelations(Post post) {
+    post.getAuthor().getUsername();
+    post.getTopic().getName();
+    post.getTopic().getDescription();
   }
 
-  private PostTopicDto toTopicDto(Topic topic) {
-    return new PostTopicDto(topic.getId(), topic.getName());
+  private void initializeCommentRelations(Comment comment) {
+    comment.getAuthor().getUsername();
+    comment.getPost().getId();
   }
 }

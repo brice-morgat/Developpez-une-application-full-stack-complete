@@ -11,8 +11,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @ExtendWith(MockitoExtension.class)
 class GlobalExceptionHandlerTest {
@@ -29,6 +31,30 @@ class GlobalExceptionHandlerTest {
 
     assertThat(response.getStatusCode().value()).isEqualTo(404);
     assertThat(response.getBody().message()).isEqualTo("not found");
+  }
+
+  @Test
+  void handleNoResourceFound_shouldReturn404() {
+    when(request.getRequestURI()).thenReturn("/swagger-ui.html");
+
+    var response =
+        handler.handleNoResourceFound(new NoResourceFoundException(HttpMethod.GET, "/swagger-ui.html"), request);
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+    assertThat(response.getBody().message()).isEqualTo("Ressource introuvable.");
+  }
+
+  @Test
+  void handleForbiddenOperation_shouldReturn403() {
+    when(request.getRequestURI()).thenReturn("/api/posts");
+
+    var response =
+        handler.handleForbiddenOperation(
+            new ForbiddenOperationException("Vous devez être abonné au thème pour publier un article."), request);
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+    assertThat(response.getBody().message())
+        .isEqualTo("Vous devez être abonné au thème pour publier un article.");
   }
 
   @Test

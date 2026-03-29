@@ -133,8 +133,7 @@ export class ProfileSettingsService {
       .map((topic) => ({
         id: topic.id,
         name: topic.name,
-        description: `Retrouvez les derniers articles autour de ${topic.name}.`,
+        description: topic.description,
       }));
   }
 }
-

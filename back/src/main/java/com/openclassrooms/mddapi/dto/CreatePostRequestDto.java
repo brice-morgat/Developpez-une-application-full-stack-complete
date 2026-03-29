@@ -12,4 +12,3 @@ public record CreatePostRequestDto(
     @NotBlank(message = "Le contenu est obligatoire.")
     @Size(max = 5000, message = "Le contenu ne peut pas dépasser 5000 caractères.")
     String content) {}
-
