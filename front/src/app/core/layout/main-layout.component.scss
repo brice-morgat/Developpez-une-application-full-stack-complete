@@ -1,5 +1,4 @@
-
-.app-topbar {
+﻿.app-topbar {
   height: 5.875rem;
   border: 0.0625rem solid #000;
   background: #fff;
@@ -29,6 +28,15 @@
   color: #1d2636;
   text-decoration: none;
   font-size: 1.1rem;
+}
+
+.desktop-logout {
+  border: none;
+  background: transparent;
+  color: #c00;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 700;
 }
 
 .desktop-nav a.active {
@@ -78,38 +86,50 @@
   border-left: 0.0625rem solid #d7ddeb;
   box-shadow: -0.5rem 0 1.5rem rgba(29, 38, 54, 0.16);
   z-index: 31;
-  display: grid;
-  align-content: start;
-  gap: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   padding: 1rem;
+  box-sizing: border-box;
 }
 
-.drawer-close {
-  justify-self: end;
-  border: none;
-  background: transparent;
-  cursor: pointer;
+.mobile-nav {
+  display: grid;
+  gap: 0.8rem;
 }
 
-.mobile-drawer a {
+.mobile-nav a {
   color: #1d2636;
   text-decoration: none;
   padding: 0.2rem 0;
 }
 
-.mobile-drawer a.active {
+.mobile-nav a.active {
   color: #6d59d3;
   font-weight: 700;
 }
 
 .logout-btn {
-  margin-top: 1rem;
+  margin-top: 0.4rem;
   border: none;
   background: transparent;
-  color: #6d59d3;
+  color: #c00;
   text-align: left;
   cursor: pointer;
   font-size: 1rem;
+  padding: 0;
+}
+
+.mobile-avatar-link {
+  justify-self: end;
+  align-self: flex-end;
+  color: #1d2636;
+}
+
+.mobile-avatar-link mat-icon {
+  font-size: 2rem;
+  width: 2rem;
+  height: 2rem;
 }
 
 @media (max-width: 48rem) {

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+﻿import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,7 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 })
 export class ProfileComponent {
   readonly form = this.fb.group({
-    username: ['Username', [Validators.required]],
+    username: ["Nom d'utilisateur", [Validators.required]],
     email: ['email@email.fr', [Validators.required, Validators.email]],
     password: ['', [Validators.minLength(6)]],
   });
@@ -24,13 +24,13 @@ export class ProfileComponent {
       id: 1,
       name: 'Titre du thème',
       description:
-        "Description: lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard...",
+        "Description : lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard...",
     },
     {
       id: 2,
       name: 'Titre du thème',
       description:
-        "Description: lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard...",
+        "Description : lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard...",
     },
   ];
 
@@ -42,4 +42,3 @@ export class ProfileComponent {
     }
   }
 }
-

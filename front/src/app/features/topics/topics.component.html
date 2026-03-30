@@ -1,4 +1,4 @@
-<section class="topics-screen">
+﻿<section class="topics-screen">
   <div class="topics-grid">
     <article *ngFor="let topic of topics" class="topic-card mdd-surface-card">
       <h2>{{ topic.name }}</h2>
@@ -11,7 +11,7 @@
         [class.mdd-btn--primary-muted]="topic.subscribed"
         (click)="toggleSubscription(topic)"
       >
-        {{ topic.subscribed ? 'Déjà abonné' : 'S’abonner' }}
+        {{ topic.subscribed ? 'Déjà abonné' : 'S\'abonner' }}
       </button>
     </article>
   </div>
