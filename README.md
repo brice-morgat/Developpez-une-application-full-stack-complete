@@ -1,25 +1,71 @@
-# P6-Full-Stack-reseau-dev
+﻿# MDD - Application full stack
 
-## Front
+## Prérequis
+- Node.js 20+
+- Java 21 (obligatoire pour le backend)
+- Maven Wrapper (`./mvnw` inclus)
+- MySQL local (pour le profil `dev`)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.1.3.
+## Lancer le projet
 
-Don't forget to install your node_modules before starting (`npm install`).
+### Backend
+```bash
+cd back
+./mvnw spring-boot:run
+```
 
-### Development server
+### Frontend
+```bash
+cd front
+npm install
+npm run start
+```
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Endpoints API
+Tous les endpoints (sauf login/register) nécessitent un token `Bearer`.
 
-### Build
+### Authentification
+- `POST /api/auth/register`
+  - body: `{ "email": "...", "username": "...", "password": "..." }`
+- `POST /api/auth/login`
+  - body: `{ "identifier": "email_ou_username", "password": "..." }`
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+### Feed & posts
+- `GET /api/feed?sort=desc|asc`
+- `POST /api/posts`
+  - body: `{ "topicId": 1, "title": "...", "content": "..." }`
+- `GET /api/posts/{postId}`
+- `POST /api/posts/{postId}/comments`
+  - body: `{ "content": "..." }`
 
-### Where to start
+### Topics
+- `GET /api/topics`
+- `POST /api/topics/{topicId}/subscribe`
+- `DELETE /api/topics/{topicId}/subscribe`
 
-As you may have seen if you already started the app, a simple home page containing a logo, a title and a button is available. If you take a look at its code (in the `home.component.html`) you will see that an external UI library is already configured in the project.
+### Utilisateur
+- `GET /api/users/me`
+- `PUT /api/users/me`
+  - body: `{ "email": "...", "username": "...", "password": "..." }`
 
-This library is `@angular/material`, it's one of the most famous in the angular ecosystem. As you can see on their docs (https://material.angular.io/), it contains a lot of highly customizable components that will help you design your interfaces quickly.
+## Tests
 
-Note: I recommend to use material however it's not mandatory, if you prefer you can get rid of it.
+### Backend
+```bash
+cd back
+./mvnw clean test
+```
+JaCoCo est configuré dans `back/pom.xml`.
+Rapport généré: `back/target/site/jacoco/index.html`.
+Les tests d'integration utilisent le profil `test` connecté à `db_mdd_test`.
 
-Good luck!
+### Frontend
+```bash
+cd front
+npm run test
+```
+
+## Documentation projet
+- Rapport de tests: [docs/testing-report.md](docs/testing-report.md)
+- Revue technique: [docs/technical-review.md](docs/technical-review.md)
+- FAQ utilisateur: [docs/faq.md](docs/faq.md)

@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -42,6 +43,7 @@ public class TopicService {
         .toList();
   }
 
+  @Transactional
   public void subscribe(Long topicId) {
     User user = currentUserService.getCurrentUser();
     Topic topic =
@@ -53,6 +55,7 @@ public class TopicService {
     }
   }
 
+  @Transactional
   public void unsubscribe(Long topicId) {
     User user = currentUserService.getCurrentUser();
     if (!topicRepository.existsById(topicId)) {
