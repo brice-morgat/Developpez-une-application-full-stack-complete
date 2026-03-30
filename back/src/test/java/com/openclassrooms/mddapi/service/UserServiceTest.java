@@ -6,13 +6,10 @@ import static org.mockito.Mockito.when;
 
 import com.openclassrooms.mddapi.dto.UpdateMeRequestDto;
 import com.openclassrooms.mddapi.mapper.UserMapper;
-import com.openclassrooms.mddapi.model.Subscription;
-import com.openclassrooms.mddapi.model.Topic;
 import com.openclassrooms.mddapi.model.User;
 import com.openclassrooms.mddapi.repository.SubscriptionRepository;
 import com.openclassrooms.mddapi.repository.UserRepository;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,23 +20,26 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
-  @Mock private CurrentUserService currentUserService;
+  @Mock private CurrentAuthenticatedUserProvider currentAuthenticatedUserProvider;
   @Mock private SubscriptionRepository subscriptionRepository;
   @Mock private UserRepository userRepository;
   @Mock private PasswordEncoder passwordEncoder;
   @Mock private UserMapper userMapper;
+  @Mock private UserIdentityNormalizer userIdentityNormalizer;
+  @Mock private UserUniquenessValidator userUniquenessValidator;
 
   @InjectMocks private UserService userService;
 
   @Test
   void getCurrentUserProfile_shouldReturnMappedProfile() {
     User current = User.builder().id(1L).username("alice").email("alice@mail.com").build();
-    Topic topic = Topic.builder().id(3L).build();
 
-    when(currentUserService.getCurrentUser()).thenReturn(current);
-    when(subscriptionRepository.findAllByUserId(1L)).thenReturn(List.of(Subscription.builder().topic(topic).build()));
+    when(currentAuthenticatedUserProvider.getCurrentUser()).thenReturn(current);
+    when(subscriptionRepository.findTopicIdsByUserId(1L)).thenReturn(List.of(3L));
     when(userMapper.toMe(current, List.of(3L)))
-        .thenReturn(new com.openclassrooms.mddapi.dto.MeResponseDto(1L, "alice@mail.com", "alice", List.of(3L)));
+        .thenReturn(
+            new com.openclassrooms.mddapi.dto.MeResponseDto(
+                1L, "alice@mail.com", "alice", List.of(3L)));
 
     var result = userService.getCurrentUserProfile();
 
@@ -50,30 +50,38 @@ class UserServiceTest {
   @Test
   void updateCurrentUser_shouldFailWhenEmailAlreadyUsed() {
     User current = User.builder().id(1L).username("alice").email("alice@mail.com").build();
-    User other = User.builder().id(2L).username("bob").email("taken@mail.com").build();
 
-    when(currentUserService.getCurrentUser()).thenReturn(current);
-    when(userRepository.findByEmailIgnoreCase("taken@mail.com")).thenReturn(Optional.of(other));
+    when(currentAuthenticatedUserProvider.getCurrentUser()).thenReturn(current);
+    when(userIdentityNormalizer.normalizeEmail("taken@mail.com")).thenReturn("taken@mail.com");
+    org.mockito.Mockito.doThrow(
+            new IllegalArgumentException("Cet e-mail est d\u00e9j\u00e0 utilis\u00e9."))
+        .when(userUniquenessValidator)
+        .ensureEmailAvailableForUpdate("taken@mail.com", 1L);
 
-    assertThatThrownBy(() -> userService.updateCurrentUser(new UpdateMeRequestDto("taken@mail.com", null, null)))
+    assertThatThrownBy(
+            () -> userService.updateCurrentUser(new UpdateMeRequestDto("taken@mail.com", null, null)))
         .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("Cet e-mail est déjà utilisé.");
+        .hasMessage("Cet e-mail est d\u00e9j\u00e0 utilis\u00e9.");
   }
 
   @Test
   void updateCurrentUser_shouldUpdatePasswordWhenProvided() {
-    User current = User.builder().id(1L).username("alice").email("alice@mail.com").password("old").build();
+    User current =
+        User.builder().id(1L).username("alice").email("alice@mail.com").password("old").build();
 
-    when(currentUserService.getCurrentUser()).thenReturn(current);
-    when(userRepository.findByEmailIgnoreCase("new@mail.com")).thenReturn(Optional.empty());
-    when(userRepository.findByUsernameIgnoreCase("Alice2")).thenReturn(Optional.empty());
+    when(currentAuthenticatedUserProvider.getCurrentUser()).thenReturn(current);
+    when(userIdentityNormalizer.normalizeEmail("new@mail.com")).thenReturn("new@mail.com");
+    when(userIdentityNormalizer.normalizeUsername("Alice2")).thenReturn("Alice2");
     when(passwordEncoder.encode("secret123")).thenReturn("encoded");
     when(userRepository.save(current)).thenReturn(current);
-    when(subscriptionRepository.findAllByUserId(1L)).thenReturn(List.of());
+    when(subscriptionRepository.findTopicIdsByUserId(1L)).thenReturn(List.of());
     when(userMapper.toMe(current, List.of()))
-        .thenReturn(new com.openclassrooms.mddapi.dto.MeResponseDto(1L, "new@mail.com", "Alice2", List.of()));
+        .thenReturn(
+            new com.openclassrooms.mddapi.dto.MeResponseDto(
+                1L, "new@mail.com", "Alice2", List.of()));
 
-    var result = userService.updateCurrentUser(new UpdateMeRequestDto("new@mail.com", "Alice2", "secret123"));
+    var result =
+        userService.updateCurrentUser(new UpdateMeRequestDto("new@mail.com", "Alice2", "secret123"));
 
     assertThat(current.getPassword()).isEqualTo("encoded");
     assertThat(result.email()).isEqualTo("new@mail.com");

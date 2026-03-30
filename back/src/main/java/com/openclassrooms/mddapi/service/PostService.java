@@ -13,7 +13,6 @@ import com.openclassrooms.mddapi.repository.PostRepository;
 import com.openclassrooms.mddapi.repository.SubscriptionRepository;
 import com.openclassrooms.mddapi.repository.TopicRepository;
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,111 +25,82 @@ public class PostService {
   private final TopicRepository topicRepository;
   private final SubscriptionRepository subscriptionRepository;
   private final CommentRepository commentRepository;
-  private final CurrentUserService currentUserService;
+  private final CurrentAuthenticatedUserProvider currentAuthenticatedUserProvider;
 
   public PostService(
       PostRepository postRepository,
       TopicRepository topicRepository,
       SubscriptionRepository subscriptionRepository,
       CommentRepository commentRepository,
-      CurrentUserService currentUserService) {
+      CurrentAuthenticatedUserProvider currentAuthenticatedUserProvider) {
     this.postRepository = postRepository;
     this.topicRepository = topicRepository;
     this.subscriptionRepository = subscriptionRepository;
     this.commentRepository = commentRepository;
-    this.currentUserService = currentUserService;
+    this.currentAuthenticatedUserProvider = currentAuthenticatedUserProvider;
   }
 
   public List<Post> getFeed(String sort) {
-    User user = currentUserService.getCurrentUser();
-    List<Long> topicIds =
-        subscriptionRepository.findAllByUserId(user.getId()).stream()
-            .map(subscription -> subscription.getTopic().getId())
-            .toList();
+    User user = currentAuthenticatedUserProvider.getCurrentUser();
+    List<Long> topicIds = subscriptionRepository.findTopicIdsByUserId(user.getId());
 
     if (topicIds.isEmpty()) {
       return List.of();
     }
 
-    Comparator<Post> comparator = Comparator.comparing(Post::getCreatedAt);
-    if (!"asc".equalsIgnoreCase(sort)) {
-      comparator = comparator.reversed();
+    if ("asc".equalsIgnoreCase(sort)) {
+      return postRepository.findAllByTopicIdInOrderByCreatedAtAsc(topicIds);
     }
 
-    return postRepository.findAllByTopicIdIn(topicIds).stream()
-        .sorted(comparator)
-        .peek(this::initializePostRelations)
-        .toList();
+    return postRepository.findAllByTopicIdInOrderByCreatedAtDesc(topicIds);
   }
 
   @Transactional
   public Post createPost(CreatePostRequestDto request) {
-    User author = currentUserService.getCurrentUser();
+    User author = currentAuthenticatedUserProvider.getCurrentUser();
     Topic topic =
         topicRepository
             .findById(request.topicId())
-            .orElseThrow(() -> new ResourceNotFoundException("Thème introuvable."));
+            .orElseThrow(() -> new ResourceNotFoundException("Th\u00e8me introuvable."));
 
     if (!subscriptionRepository.existsByUserIdAndTopicId(author.getId(), topic.getId())) {
-      throw new ForbiddenOperationException("Vous devez être abonné au thème pour publier un article.");
+      throw new ForbiddenOperationException(
+          "Vous devez \u00eatre abonn\u00e9 au th\u00e8me pour publier un article.");
     }
 
-    Post post =
-        postRepository.save(
-            Post.builder()
-                .title(request.title().trim())
-                .content(request.content().trim())
-                .author(author)
-                .topic(topic)
-                .createdAt(LocalDateTime.now())
-                .build());
-    initializePostRelations(post);
-    return post;
+    return postRepository.save(
+        Post.builder()
+            .title(request.title().trim())
+            .content(request.content().trim())
+            .author(author)
+            .topic(topic)
+            .createdAt(LocalDateTime.now())
+            .build());
   }
 
   public PostWithComments getPostWithComments(Long postId) {
     Post post = findPostById(postId);
-    List<Comment> comments = findCommentsByPostId(postId);
-    initializePostRelations(post);
-    comments.forEach(this::initializeCommentRelations);
+    List<Comment> comments = commentRepository.findAllByPostIdOrderByCreatedAtAsc(postId);
     return new PostWithComments(post, comments);
   }
 
   @Transactional
   public Comment addComment(Long postId, CreateCommentRequestDto request) {
-    User author = currentUserService.getCurrentUser();
+    User author = currentAuthenticatedUserProvider.getCurrentUser();
     Post post = findPostById(postId);
 
-    Comment comment =
-        commentRepository.save(
-            Comment.builder()
-                .post(post)
-                .author(author)
-                .content(request.content().trim())
-                .createdAt(LocalDateTime.now())
-                .build());
-    initializeCommentRelations(comment);
-    return comment;
+    return commentRepository.save(
+        Comment.builder()
+            .post(post)
+            .author(author)
+            .content(request.content().trim())
+            .createdAt(LocalDateTime.now())
+            .build());
   }
 
   private Post findPostById(Long postId) {
     return postRepository
-        .findById(postId)
+        .findDetailedById(postId)
         .orElseThrow(() -> new ResourceNotFoundException("Article introuvable."));
-  }
-
-  private List<Comment> findCommentsByPostId(Long postId) {
-    return commentRepository.findAllByPostIdOrderByCreatedAtAsc(postId);
-  }
-
-  private void initializePostRelations(Post post) {
-    post.getAuthor().getUsername();
-    post.getTopic().getName();
-    post.getTopic().getDescription();
-  }
-
-  private void initializeCommentRelations(Comment comment) {
-    comment.getAuthor().getUsername();
-    comment.getPost().getId();
   }
 }

@@ -7,7 +7,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.openclassrooms.mddapi.exception.ResourceNotFoundException;
-import com.openclassrooms.mddapi.model.Subscription;
 import com.openclassrooms.mddapi.model.Topic;
 import com.openclassrooms.mddapi.model.User;
 import com.openclassrooms.mddapi.repository.SubscriptionRepository;
@@ -26,7 +25,7 @@ class TopicServiceTest {
 
   @Mock private TopicRepository topicRepository;
   @Mock private SubscriptionRepository subscriptionRepository;
-  @Mock private CurrentUserService currentUserService;
+  @Mock private CurrentAuthenticatedUserProvider currentAuthenticatedUserProvider;
 
   @InjectMocks private TopicService topicService;
 
@@ -36,10 +35,9 @@ class TopicServiceTest {
     Topic t1 = Topic.builder().id(10L).name("Java").description("Java desc").build();
     Topic t2 = Topic.builder().id(11L).name("Angular").description("Angular desc").build();
 
-    when(currentUserService.getCurrentUser()).thenReturn(user);
+    when(currentAuthenticatedUserProvider.getCurrentUser()).thenReturn(user);
     when(topicRepository.findAll()).thenReturn(List.of(t1, t2));
-    when(subscriptionRepository.findAllByUserId(1L))
-        .thenReturn(List.of(Subscription.builder().topic(t2).build()));
+    when(subscriptionRepository.findTopicIdsByUserId(1L)).thenReturn(List.of(11L));
 
     var result = topicService.getTopicsForCurrentUser();
 
@@ -54,7 +52,7 @@ class TopicServiceTest {
     User user = User.builder().id(1L).build();
     Topic topic = Topic.builder().id(2L).build();
 
-    when(currentUserService.getCurrentUser()).thenReturn(user);
+    when(currentAuthenticatedUserProvider.getCurrentUser()).thenReturn(user);
     when(topicRepository.findById(2L)).thenReturn(Optional.of(topic));
     when(subscriptionRepository.existsByUserIdAndTopicId(1L, 2L)).thenReturn(false);
 
@@ -68,7 +66,7 @@ class TopicServiceTest {
     User user = User.builder().id(1L).build();
     Topic topic = Topic.builder().id(2L).createdAt(LocalDateTime.now()).build();
 
-    when(currentUserService.getCurrentUser()).thenReturn(user);
+    when(currentAuthenticatedUserProvider.getCurrentUser()).thenReturn(user);
     when(topicRepository.findById(2L)).thenReturn(Optional.of(topic));
     when(subscriptionRepository.existsByUserIdAndTopicId(1L, 2L)).thenReturn(true);
 
@@ -80,11 +78,11 @@ class TopicServiceTest {
   @Test
   void unsubscribe_shouldFailWhenTopicMissing() {
     User user = User.builder().id(1L).build();
-    when(currentUserService.getCurrentUser()).thenReturn(user);
+    when(currentAuthenticatedUserProvider.getCurrentUser()).thenReturn(user);
     when(topicRepository.existsById(44L)).thenReturn(false);
 
     assertThatThrownBy(() -> topicService.unsubscribe(44L))
         .isInstanceOf(ResourceNotFoundException.class)
-        .hasMessageContaining("Thème introuvable");
+        .hasMessageContaining("Th\u00e8me introuvable");
   }
 }

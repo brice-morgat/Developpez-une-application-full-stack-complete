@@ -21,10 +21,10 @@ class AuthControllerIT extends BaseIT {
         {
           "email": "%s",
           "username": "%s",
-          "password": "password123"
+          "password": "%s"
         }
         """
-            .formatted(email, username);
+            .formatted(email, username, VALID_PASSWORD);
 
     var result =
         mockMvc
@@ -48,10 +48,10 @@ class AuthControllerIT extends BaseIT {
         """
         {
           "identifier": "%s",
-          "password": "password123"
+          "password": "%s"
         }
         """
-            .formatted(email);
+            .formatted(email, VALID_PASSWORD);
 
     var result =
         mockMvc

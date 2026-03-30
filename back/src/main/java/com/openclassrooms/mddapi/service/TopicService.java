@@ -20,23 +20,21 @@ public class TopicService {
 
   private final TopicRepository topicRepository;
   private final SubscriptionRepository subscriptionRepository;
-  private final CurrentUserService currentUserService;
+  private final CurrentAuthenticatedUserProvider currentAuthenticatedUserProvider;
 
   public TopicService(
       TopicRepository topicRepository,
       SubscriptionRepository subscriptionRepository,
-      CurrentUserService currentUserService) {
+      CurrentAuthenticatedUserProvider currentAuthenticatedUserProvider) {
     this.topicRepository = topicRepository;
     this.subscriptionRepository = subscriptionRepository;
-    this.currentUserService = currentUserService;
+    this.currentAuthenticatedUserProvider = currentAuthenticatedUserProvider;
   }
 
   public List<TopicResponseDto> getTopicsForCurrentUser() {
-    User user = currentUserService.getCurrentUser();
+    User user = currentAuthenticatedUserProvider.getCurrentUser();
     Set<Long> subscribedTopicIds =
-        subscriptionRepository.findAllByUserId(user.getId()).stream()
-            .map(subscription -> subscription.getTopic().getId())
-            .collect(Collectors.toSet());
+        subscriptionRepository.findTopicIdsByUserId(user.getId()).stream().collect(Collectors.toSet());
 
     return topicRepository.findAll().stream()
         .map(
@@ -51,11 +49,11 @@ public class TopicService {
 
   @Transactional
   public void subscribe(Long topicId) {
-    User user = currentUserService.getCurrentUser();
+    User user = currentAuthenticatedUserProvider.getCurrentUser();
     Topic topic =
         topicRepository
             .findById(topicId)
-            .orElseThrow(() -> new ResourceNotFoundException("Thème introuvable."));
+            .orElseThrow(() -> new ResourceNotFoundException("Th\u00e8me introuvable."));
 
     if (!subscriptionRepository.existsByUserIdAndTopicId(user.getId(), topicId)) {
       subscriptionRepository.save(
@@ -65,9 +63,9 @@ public class TopicService {
 
   @Transactional
   public void unsubscribe(Long topicId) {
-    User user = currentUserService.getCurrentUser();
+    User user = currentAuthenticatedUserProvider.getCurrentUser();
     if (!topicRepository.existsById(topicId)) {
-      throw new ResourceNotFoundException("Thème introuvable.");
+      throw new ResourceNotFoundException("Th\u00e8me introuvable.");
     }
     subscriptionRepository.deleteByUserIdAndTopicId(user.getId(), topicId);
   }

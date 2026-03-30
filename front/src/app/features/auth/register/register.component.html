@@ -7,16 +7,39 @@
       <mat-form-field appearance="outline">
         <mat-label>Nom d'utilisateur</mat-label>
         <input matInput formControlName="username" />
+        @if (form.controls.username.touched && form.controls.username.hasError('required')) {
+          <mat-error>Le nom d'utilisateur est obligatoire.</mat-error>
+        }
+        @if (form.controls.username.touched && form.controls.username.hasError('minlength')) {
+          <mat-error>Le nom d'utilisateur doit contenir au moins 3 caractères.</mat-error>
+        }
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>Adresse e-mail</mat-label>
         <input matInput formControlName="email" />
+        @if (form.controls.email.touched && form.controls.email.hasError('required')) {
+          <mat-error>L'e-mail est obligatoire.</mat-error>
+        }
+        @if (form.controls.email.touched && form.controls.email.hasError('email')) {
+          <mat-error>Le format de l'e-mail est invalide.</mat-error>
+        }
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>Mot de passe</mat-label>
         <input matInput type="password" formControlName="password" />
+        @if (form.controls.password.touched && form.controls.password.hasError('required')) {
+          <mat-error>Le mot de passe est obligatoire.</mat-error>
+        }
+        @if (form.controls.password.touched && form.controls.password.hasError('minlength')) {
+          <mat-error>Le mot de passe doit contenir au moins 8 caractères.</mat-error>
+        }
+        @if (form.controls.password.touched && form.controls.password.hasError('passwordComplexity')) {
+          <mat-error>
+            Le mot de passe doit contenir au moins une minuscule, une majuscule, un chiffre et un caractère spécial.
+          </mat-error>
+        }
       </mat-form-field>
 
       @if (error(); as errorMessage) {

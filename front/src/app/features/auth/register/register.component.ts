@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Router, RouterLink } from '@angular/router';
 import { Store } from '@ngxs/store';
+import { passwordComplexityValidator } from '../../../core/forms/password-complexity.validator';
 import { Register } from '../../../core/auth/auth.actions';
 import { AuthState } from '../../../core/auth/auth.state';
 
@@ -39,7 +40,7 @@ export class RegisterComponent {
   protected readonly form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
     username: ['', [Validators.required, Validators.minLength(3)]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
+    password: ['', [Validators.required, Validators.minLength(8), passwordComplexityValidator()]],
   });
 
   protected submit(): void {

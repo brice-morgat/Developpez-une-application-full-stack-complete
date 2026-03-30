@@ -29,6 +29,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 abstract class BaseIT {
 
+  protected static final String VALID_PASSWORD = "Password1!";
+
   @Autowired protected MockMvc mockMvc;
   @Autowired protected ObjectMapper objectMapper;
   @Autowired protected UserRepository userRepository;
@@ -64,10 +66,10 @@ abstract class BaseIT {
         {
           "email": "%s",
           "username": "%s",
-          "password": "password123"
+          "password": "%s"
         }
         """
-            .formatted(email, username);
+            .formatted(email, username, VALID_PASSWORD);
 
     mockMvc
         .perform(post("/api/auth/register").contentType(MediaType.APPLICATION_JSON).content(body))
@@ -81,10 +83,10 @@ abstract class BaseIT {
         """
         {
           "identifier": "%s",
-          "password": "password123"
+          "password": "%s"
         }
         """
-            .formatted(email);
+            .formatted(email, VALID_PASSWORD);
 
     String loginResponse =
         mockMvc

@@ -13,7 +13,6 @@ import com.openclassrooms.mddapi.exception.ForbiddenOperationException;
 import com.openclassrooms.mddapi.exception.ResourceNotFoundException;
 import com.openclassrooms.mddapi.model.Comment;
 import com.openclassrooms.mddapi.model.Post;
-import com.openclassrooms.mddapi.model.Subscription;
 import com.openclassrooms.mddapi.model.Topic;
 import com.openclassrooms.mddapi.model.User;
 import com.openclassrooms.mddapi.repository.CommentRepository;
@@ -36,15 +35,15 @@ class PostServiceTest {
   @Mock private TopicRepository topicRepository;
   @Mock private SubscriptionRepository subscriptionRepository;
   @Mock private CommentRepository commentRepository;
-  @Mock private CurrentUserService currentUserService;
+  @Mock private CurrentAuthenticatedUserProvider currentAuthenticatedUserProvider;
 
   @InjectMocks private PostService postService;
 
   @Test
   void getFeed_shouldReturnEmptyWithoutSubscriptions() {
     User user = User.builder().id(1L).build();
-    when(currentUserService.getCurrentUser()).thenReturn(user);
-    when(subscriptionRepository.findAllByUserId(1L)).thenReturn(List.of());
+    when(currentAuthenticatedUserProvider.getCurrentUser()).thenReturn(user);
+    when(subscriptionRepository.findTopicIdsByUserId(1L)).thenReturn(List.of());
 
     assertThat(postService.getFeed("desc")).isEmpty();
   }
@@ -74,9 +73,10 @@ class PostServiceTest {
             .createdAt(LocalDateTime.now())
             .build();
 
-    when(currentUserService.getCurrentUser()).thenReturn(user);
-    when(subscriptionRepository.findAllByUserId(1L)).thenReturn(List.of(Subscription.builder().topic(topic).build()));
-    when(postRepository.findAllByTopicIdIn(List.of(2L))).thenReturn(List.of(older, newer));
+    when(currentAuthenticatedUserProvider.getCurrentUser()).thenReturn(user);
+    when(subscriptionRepository.findTopicIdsByUserId(1L)).thenReturn(List.of(2L));
+    when(postRepository.findAllByTopicIdInOrderByCreatedAtDesc(List.of(2L)))
+        .thenReturn(List.of(newer, older));
 
     var result = postService.getFeed("desc");
 
@@ -85,11 +85,47 @@ class PostServiceTest {
   }
 
   @Test
+  void getFeed_shouldSortAscendingWhenRequested() {
+    User user = User.builder().id(1L).build();
+    Topic topic = Topic.builder().id(2L).name("Java").description("Java desc").build();
+    User author = User.builder().id(9L).username("bob").build();
+
+    Post older =
+        Post.builder()
+            .id(1L)
+            .title("A")
+            .content("a")
+            .topic(topic)
+            .author(author)
+            .createdAt(LocalDateTime.now().minusDays(1))
+            .build();
+    Post newer =
+        Post.builder()
+            .id(2L)
+            .title("B")
+            .content("b")
+            .topic(topic)
+            .author(author)
+            .createdAt(LocalDateTime.now())
+            .build();
+
+    when(currentAuthenticatedUserProvider.getCurrentUser()).thenReturn(user);
+    when(subscriptionRepository.findTopicIdsByUserId(1L)).thenReturn(List.of(2L));
+    when(postRepository.findAllByTopicIdInOrderByCreatedAtAsc(List.of(2L)))
+        .thenReturn(List.of(older, newer));
+
+    var result = postService.getFeed("asc");
+
+    assertThat(result).hasSize(2);
+    assertThat(result.get(0).getId()).isEqualTo(1L);
+  }
+
+  @Test
   void createPost_shouldTrimFields() {
     User user = User.builder().id(1L).username("alice").build();
     Topic topic = Topic.builder().id(3L).name("Angular").description("Angular desc").build();
 
-    when(currentUserService.getCurrentUser()).thenReturn(user);
+    when(currentAuthenticatedUserProvider.getCurrentUser()).thenReturn(user);
     when(topicRepository.findById(3L)).thenReturn(Optional.of(topic));
     when(subscriptionRepository.existsByUserIdAndTopicId(1L, 3L)).thenReturn(true);
     when(postRepository.save(any(Post.class)))
@@ -112,13 +148,14 @@ class PostServiceTest {
     User user = User.builder().id(1L).username("alice").build();
     Topic topic = Topic.builder().id(3L).name("Angular").description("Angular desc").build();
 
-    when(currentUserService.getCurrentUser()).thenReturn(user);
+    when(currentAuthenticatedUserProvider.getCurrentUser()).thenReturn(user);
     when(topicRepository.findById(3L)).thenReturn(Optional.of(topic));
     when(subscriptionRepository.existsByUserIdAndTopicId(1L, 3L)).thenReturn(false);
 
-    assertThatThrownBy(() -> postService.createPost(new CreatePostRequestDto(3L, "Title", "Content")))
+    assertThatThrownBy(
+            () -> postService.createPost(new CreatePostRequestDto(3L, "Title", "Content")))
         .isInstanceOf(ForbiddenOperationException.class)
-        .hasMessage("Vous devez être abonné au thème pour publier un article.");
+        .hasMessage("Vous devez \u00eatre abonn\u00e9 au th\u00e8me pour publier un article.");
 
     verify(postRepository, never()).save(any(Post.class));
   }
@@ -128,11 +165,24 @@ class PostServiceTest {
     User author = User.builder().id(1L).username("alice").build();
     Topic topic = Topic.builder().id(2L).name("Java").description("Java desc").build();
     Post post =
-        Post.builder().id(7L).title("T").content("C").author(author).topic(topic).createdAt(LocalDateTime.now()).build();
+        Post.builder()
+            .id(7L)
+            .title("T")
+            .content("C")
+            .author(author)
+            .topic(topic)
+            .createdAt(LocalDateTime.now())
+            .build();
     Comment comment =
-        Comment.builder().id(9L).content("nice").author(author).post(post).createdAt(LocalDateTime.now()).build();
+        Comment.builder()
+            .id(9L)
+            .content("nice")
+            .author(author)
+            .post(post)
+            .createdAt(LocalDateTime.now())
+            .build();
 
-    when(postRepository.findById(7L)).thenReturn(Optional.of(post));
+    when(postRepository.findDetailedById(7L)).thenReturn(Optional.of(post));
     when(commentRepository.findAllByPostIdOrderByCreatedAtAsc(7L)).thenReturn(List.of(comment));
 
     var result = postService.getPostWithComments(7L);
@@ -144,8 +194,9 @@ class PostServiceTest {
 
   @Test
   void addComment_shouldFailWhenPostMissing() {
-    when(currentUserService.getCurrentUser()).thenReturn(User.builder().id(1L).username("alice").build());
-    when(postRepository.findById(999L)).thenReturn(Optional.empty());
+    when(currentAuthenticatedUserProvider.getCurrentUser())
+        .thenReturn(User.builder().id(1L).username("alice").build());
+    when(postRepository.findDetailedById(999L)).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> postService.addComment(999L, new CreateCommentRequestDto("test")))
         .isInstanceOf(ResourceNotFoundException.class)

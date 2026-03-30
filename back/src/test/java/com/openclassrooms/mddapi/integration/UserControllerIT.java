@@ -43,7 +43,7 @@ class UserControllerIT extends BaseIT {
         {
           "email": "updated_%s",
           "username": "profile_user_updated",
-          "password": "newpassword123"
+          "password": "Newpassword1!"
         }
         """
             .formatted(email);

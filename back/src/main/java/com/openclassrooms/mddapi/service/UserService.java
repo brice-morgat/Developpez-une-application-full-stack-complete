@@ -15,57 +15,51 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class UserService {
 
-  private final CurrentUserService currentUserService;
+  private final CurrentAuthenticatedUserProvider currentAuthenticatedUserProvider;
   private final SubscriptionRepository subscriptionRepository;
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
   private final UserMapper userMapper;
+  private final UserIdentityNormalizer userIdentityNormalizer;
+  private final UserUniquenessValidator userUniquenessValidator;
 
   public UserService(
-      CurrentUserService currentUserService,
+      CurrentAuthenticatedUserProvider currentAuthenticatedUserProvider,
       SubscriptionRepository subscriptionRepository,
       UserRepository userRepository,
       PasswordEncoder passwordEncoder,
-      UserMapper userMapper) {
-    this.currentUserService = currentUserService;
+      UserMapper userMapper,
+      UserIdentityNormalizer userIdentityNormalizer,
+      UserUniquenessValidator userUniquenessValidator) {
+    this.currentAuthenticatedUserProvider = currentAuthenticatedUserProvider;
     this.subscriptionRepository = subscriptionRepository;
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
     this.userMapper = userMapper;
+    this.userIdentityNormalizer = userIdentityNormalizer;
+    this.userUniquenessValidator = userUniquenessValidator;
   }
 
   public MeResponseDto getCurrentUserProfile() {
-    User currentUser = currentUserService.getCurrentUser();
-    List<Long> topicIds =
-        subscriptionRepository.findAllByUserId(currentUser.getId()).stream()
-            .map(subscription -> subscription.getTopic().getId())
-            .toList();
+    User currentUser = currentAuthenticatedUserProvider.getCurrentUser();
+    List<Long> topicIds = subscriptionRepository.findTopicIdsByUserId(currentUser.getId());
     return userMapper.toMe(currentUser, topicIds);
   }
 
   @Transactional
   public MeResponseDto updateCurrentUser(UpdateMeRequestDto request) {
-    User currentUser = currentUserService.getCurrentUser();
+    User currentUser = currentAuthenticatedUserProvider.getCurrentUser();
 
     if (request.email() != null && !request.email().isBlank()) {
-      String normalizedEmail = request.email().trim().toLowerCase();
-      userRepository
-          .findByEmailIgnoreCase(normalizedEmail)
-          .filter(existing -> !existing.getId().equals(currentUser.getId()))
-          .ifPresent(existing -> {
-            throw new IllegalArgumentException("Cet e-mail est déjà utilisé.");
-          });
+      String normalizedEmail = userIdentityNormalizer.normalizeEmail(request.email());
+      userUniquenessValidator.ensureEmailAvailableForUpdate(normalizedEmail, currentUser.getId());
       currentUser.setEmail(normalizedEmail);
     }
 
     if (request.username() != null && !request.username().isBlank()) {
-      String normalizedUsername = request.username().trim();
-      userRepository
-          .findByUsernameIgnoreCase(normalizedUsername)
-          .filter(existing -> !existing.getId().equals(currentUser.getId()))
-          .ifPresent(existing -> {
-            throw new IllegalArgumentException("Ce nom d'utilisateur est déjà utilisé.");
-          });
+      String normalizedUsername = userIdentityNormalizer.normalizeUsername(request.username());
+      userUniquenessValidator.ensureUsernameAvailableForUpdate(
+          normalizedUsername, currentUser.getId());
       currentUser.setUsername(normalizedUsername);
     }
 
@@ -74,11 +68,7 @@ public class UserService {
     }
 
     User updated = userRepository.save(currentUser);
-    List<Long> topicIds =
-        subscriptionRepository.findAllByUserId(updated.getId()).stream()
-            .map(subscription -> subscription.getTopic().getId())
-            .toList();
+    List<Long> topicIds = subscriptionRepository.findTopicIdsByUserId(updated.getId());
     return userMapper.toMe(updated, topicIds);
   }
 }
-
