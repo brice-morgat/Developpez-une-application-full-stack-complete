@@ -38,7 +38,7 @@ class GlobalExceptionHandlerTest {
     var response = handler.handleValidation(new ConstraintViolationException("invalid", Set.of()), request);
 
     assertThat(response.getStatusCode().value()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    assertThat(response.getBody().message()).isEqualTo("Validation failed");
+    assertThat(response.getBody().message()).isEqualTo("Données invalides.");
   }
 
   @Test
@@ -67,7 +67,7 @@ class GlobalExceptionHandlerTest {
     var response = handler.handleBadCredentials(new BadCredentialsException("x"), request);
 
     assertThat(response.getStatusCode().value()).isEqualTo(401);
-    assertThat(response.getBody().message()).isEqualTo("Invalid credentials");
+    assertThat(response.getBody().message()).isEqualTo("Identifiants invalides.");
   }
 
   @Test
@@ -77,6 +77,6 @@ class GlobalExceptionHandlerTest {
     var response = handler.handleGeneric(new RuntimeException("boom"), request);
 
     assertThat(response.getStatusCode().value()).isEqualTo(500);
-    assertThat(response.getBody().message()).isEqualTo("Unexpected server error");
+    assertThat(response.getBody().message()).isEqualTo("Une erreur interne est survenue.");
   }
 }

@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
-import com.openclassrooms.mddapi.exception.ResourceNotFoundException;
 import com.openclassrooms.mddapi.model.User;
 import com.openclassrooms.mddapi.repository.UserRepository;
 import java.util.Optional;
@@ -14,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -43,7 +43,7 @@ class CurrentUserServiceTest {
   @Test
   void getCurrentUser_shouldFailWhenAuthenticationMissing() {
     assertThatThrownBy(() -> currentUserService.getCurrentUser())
-        .isInstanceOf(ResourceNotFoundException.class)
-        .hasMessage("Authenticated user not found");
+        .isInstanceOf(AuthenticationCredentialsNotFoundException.class)
+        .hasMessage("Utilisateur non authentifié.");
   }
 }

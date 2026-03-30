@@ -6,10 +6,15 @@ import jakarta.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,6 +22,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+  private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
   @ExceptionHandler(ResourceNotFoundException.class)
   public ResponseEntity<ApiErrorDto> handleNotFound(
@@ -27,15 +33,16 @@ public class GlobalExceptionHandler {
   @ExceptionHandler({MethodArgumentNotValidException.class, ConstraintViolationException.class})
   public ResponseEntity<ApiErrorDto> handleValidation(Exception exception, HttpServletRequest request) {
     Map<String, String> details = extractValidationDetails(exception);
-    return buildResponse(HttpStatus.BAD_REQUEST, "Validation failed", request, details);
+    return buildResponse(HttpStatus.BAD_REQUEST, "Données invalides.", request, details);
   }
 
   @ExceptionHandler(DataIntegrityViolationException.class)
   public ResponseEntity<ApiErrorDto> handleDataIntegrity(
       DataIntegrityViolationException exception, HttpServletRequest request) {
+    LOGGER.warn("Data integrity violation on {}: {}", request.getRequestURI(), exception.getMessage());
     return buildResponse(
         HttpStatus.CONFLICT,
-        "Data integrity violation. Check unique constraints and relationships.",
+        "Conflit de données. Vérifiez les contraintes d'unicité.",
         request,
         null);
   }
@@ -49,13 +56,25 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(BadCredentialsException.class)
   public ResponseEntity<ApiErrorDto> handleBadCredentials(
       BadCredentialsException exception, HttpServletRequest request) {
-    return buildResponse(HttpStatus.UNAUTHORIZED, "Invalid credentials", request, null);
+    return buildResponse(HttpStatus.UNAUTHORIZED, "Identifiants invalides.", request, null);
+  }
+
+  @ExceptionHandler({AuthenticationException.class, AuthenticationCredentialsNotFoundException.class})
+  public ResponseEntity<ApiErrorDto> handleUnauthorized(Exception exception, HttpServletRequest request) {
+    return buildResponse(HttpStatus.UNAUTHORIZED, "Vous devez être authentifié.", request, null);
+  }
+
+  @ExceptionHandler(AccessDeniedException.class)
+  public ResponseEntity<ApiErrorDto> handleAccessDenied(
+      AccessDeniedException exception, HttpServletRequest request) {
+    return buildResponse(HttpStatus.FORBIDDEN, "Accès refusé.", request, null);
   }
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ApiErrorDto> handleGeneric(Exception exception, HttpServletRequest request) {
+    LOGGER.error("Unhandled exception on {}", request.getRequestURI(), exception);
     return buildResponse(
-        HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected server error", request, null);
+        HttpStatus.INTERNAL_SERVER_ERROR, "Une erreur interne est survenue.", request, null);
   }
 
   private ResponseEntity<ApiErrorDto> buildResponse(
@@ -77,7 +96,7 @@ public class GlobalExceptionHandler {
           .collect(
               Collectors.toMap(
                   FieldError::getField,
-                  fieldError -> fieldError.getDefaultMessage() == null ? "Invalid value" : fieldError.getDefaultMessage(),
+                  fieldError -> fieldError.getDefaultMessage() == null ? "Valeur invalide" : fieldError.getDefaultMessage(),
                   (left, right) -> left));
     }
 
@@ -86,7 +105,7 @@ public class GlobalExceptionHandler {
           .collect(
               Collectors.toMap(
                   violation -> violation.getPropertyPath().toString(),
-                  violation -> violation.getMessage() == null ? "Invalid value" : violation.getMessage(),
+                  violation -> violation.getMessage() == null ? "Valeur invalide" : violation.getMessage(),
                   (left, right) -> left));
     }
 

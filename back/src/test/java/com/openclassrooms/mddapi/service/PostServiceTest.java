@@ -109,6 +109,6 @@ class PostServiceTest {
 
     assertThatThrownBy(() -> postService.addComment(999L, new CreateCommentRequestDto("test")))
         .isInstanceOf(ResourceNotFoundException.class)
-        .hasMessageContaining("Post not found");
+        .hasMessageContaining("Article introuvable");
   }
 }

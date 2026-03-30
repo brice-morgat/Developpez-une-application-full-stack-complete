@@ -9,8 +9,10 @@ import com.openclassrooms.mddapi.repository.UserRepository;
 import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class UserService {
 
   private final CurrentUserService currentUserService;
@@ -41,16 +43,17 @@ public class UserService {
     return userMapper.toMe(currentUser, topicIds);
   }
 
+  @Transactional
   public MeResponseDto updateCurrentUser(UpdateMeRequestDto request) {
     User currentUser = currentUserService.getCurrentUser();
 
     if (request.email() != null && !request.email().isBlank()) {
       String normalizedEmail = request.email().trim().toLowerCase();
       userRepository
-          .findByEmail(normalizedEmail)
+          .findByEmailIgnoreCase(normalizedEmail)
           .filter(existing -> !existing.getId().equals(currentUser.getId()))
           .ifPresent(existing -> {
-            throw new IllegalArgumentException("Email is already used");
+            throw new IllegalArgumentException("Cet e-mail est déjà utilisé.");
           });
       currentUser.setEmail(normalizedEmail);
     }
@@ -58,10 +61,10 @@ public class UserService {
     if (request.username() != null && !request.username().isBlank()) {
       String normalizedUsername = request.username().trim();
       userRepository
-          .findByUsername(normalizedUsername)
+          .findByUsernameIgnoreCase(normalizedUsername)
           .filter(existing -> !existing.getId().equals(currentUser.getId()))
           .ifPresent(existing -> {
-            throw new IllegalArgumentException("Username is already used");
+            throw new IllegalArgumentException("Ce nom d'utilisateur est déjà utilisé.");
           });
       currentUser.setUsername(normalizedUsername);
     }

@@ -8,6 +8,8 @@ import com.openclassrooms.mddapi.dto.PostDetailDto;
 import com.openclassrooms.mddapi.service.PostService;
 import jakarta.validation.Valid;
 import java.util.List;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,6 +34,7 @@ public class PostController {
   }
 
   @PostMapping("/posts")
+  @ResponseStatus(HttpStatus.CREATED)
   public FeedPostDto createPost(@Valid @RequestBody CreatePostRequestDto request) {
     return postService.createPost(request);
   }
@@ -42,6 +45,7 @@ public class PostController {
   }
 
   @PostMapping("/posts/{postId}/comments")
+  @ResponseStatus(HttpStatus.CREATED)
   public CommentDto createComment(
       @PathVariable Long postId, @Valid @RequestBody CreateCommentRequestDto request) {
     return postService.addComment(postId, request);

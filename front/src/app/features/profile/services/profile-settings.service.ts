@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+ï»¿import { Injectable, signal } from '@angular/core';
 import { finalize, forkJoin } from 'rxjs';
 import { TopicResponse } from '../../../core/api/topics.models';
 import { TopicsService } from '../../../core/api/topics.service';
@@ -93,10 +93,10 @@ export class ProfileSettingsService {
             username: user.username,
             email: user.email,
           });
-          this._successMessage.set('Profil mis à jour.');
+          this._successMessage.set('Profil mis Ã  jour.');
         },
         error: (error) => {
-          this._errorMessage.set(error?.error?.message ?? 'Impossible de mettre à jour le profil.');
+          this._errorMessage.set(error?.error?.message ?? 'Impossible de mettre Ã  jour le profil.');
         },
       });
   }
@@ -122,7 +122,7 @@ export class ProfileSettingsService {
           this._subscriptions.set(this._subscriptions().filter((item) => item.id !== topic.id));
         },
         error: () => {
-          this._errorMessage.set('Impossible de se désabonner de ce thème.');
+          this._errorMessage.set('Impossible de se dÃ©sabonner de ce thÃ¨me.');
         },
       });
   }
@@ -137,3 +137,4 @@ export class ProfileSettingsService {
       }));
   }
 }
+

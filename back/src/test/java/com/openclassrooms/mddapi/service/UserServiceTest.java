@@ -53,11 +53,11 @@ class UserServiceTest {
     User other = User.builder().id(2L).username("bob").email("taken@mail.com").build();
 
     when(currentUserService.getCurrentUser()).thenReturn(current);
-    when(userRepository.findByEmail("taken@mail.com")).thenReturn(Optional.of(other));
+    when(userRepository.findByEmailIgnoreCase("taken@mail.com")).thenReturn(Optional.of(other));
 
     assertThatThrownBy(() -> userService.updateCurrentUser(new UpdateMeRequestDto("taken@mail.com", null, null)))
         .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("Email is already used");
+        .hasMessage("Cet e-mail est déjà utilisé.");
   }
 
   @Test
@@ -65,8 +65,8 @@ class UserServiceTest {
     User current = User.builder().id(1L).username("alice").email("alice@mail.com").password("old").build();
 
     when(currentUserService.getCurrentUser()).thenReturn(current);
-    when(userRepository.findByEmail("new@mail.com")).thenReturn(Optional.empty());
-    when(userRepository.findByUsername("Alice2")).thenReturn(Optional.empty());
+    when(userRepository.findByEmailIgnoreCase("new@mail.com")).thenReturn(Optional.empty());
+    when(userRepository.findByUsernameIgnoreCase("Alice2")).thenReturn(Optional.empty());
     when(passwordEncoder.encode("secret123")).thenReturn("encoded");
     when(userRepository.save(current)).thenReturn(current);
     when(subscriptionRepository.findAllByUserId(1L)).thenReturn(List.of());

@@ -5,6 +5,8 @@ import com.openclassrooms.mddapi.dto.AuthResponseDto;
 import com.openclassrooms.mddapi.dto.RegisterRequestDto;
 import com.openclassrooms.mddapi.service.AuthService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +23,7 @@ public class AuthController {
   }
 
   @PostMapping("/register")
+  @ResponseStatus(HttpStatus.CREATED)
   public AuthResponseDto register(@Valid @RequestBody RegisterRequestDto request) {
     return authService.register(request);
   }

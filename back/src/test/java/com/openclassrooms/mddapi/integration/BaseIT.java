@@ -71,7 +71,7 @@ abstract class BaseIT {
 
     mockMvc
         .perform(post("/api/auth/register").contentType(MediaType.APPLICATION_JSON).content(body))
-        .andExpect(status().isOk());
+        .andExpect(status().isCreated());
   }
 
   protected String registerAndLogin(String email, String username) throws Exception {

@@ -29,7 +29,7 @@ class AuthControllerIT extends BaseIT {
     var result =
         mockMvc
             .perform(post("/api/auth/register").contentType(MediaType.APPLICATION_JSON).content(body))
-            .andExpect(status().isOk())
+            .andExpect(status().isCreated())
             .andReturn();
 
     JsonNode json = parseBody(result.getResponse().getContentAsString(StandardCharsets.UTF_8));

@@ -20,8 +20,10 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class PostService {
 
   private final PostRepository postRepository;
@@ -62,12 +64,13 @@ public class PostService {
     return postRepository.findAllByTopicIdIn(topicIds).stream().sorted(comparator).map(this::toFeedDto).toList();
   }
 
+  @Transactional
   public FeedPostDto createPost(CreatePostRequestDto request) {
     User author = currentUserService.getCurrentUser();
     Topic topic =
         topicRepository
             .findById(request.topicId())
-            .orElseThrow(() -> new ResourceNotFoundException("Topic not found for id " + request.topicId()));
+            .orElseThrow(() -> new ResourceNotFoundException("Thème introuvable."));
 
     Post post =
         postRepository.save(
@@ -86,7 +89,7 @@ public class PostService {
     Post post =
         postRepository
             .findById(postId)
-            .orElseThrow(() -> new ResourceNotFoundException("Post not found for id " + postId));
+            .orElseThrow(() -> new ResourceNotFoundException("Article introuvable."));
 
     List<CommentDto> comments =
         commentRepository.findAllByPostIdOrderByCreatedAtAsc(postId).stream().map(this::toCommentDto).toList();
@@ -101,12 +104,13 @@ public class PostService {
         comments);
   }
 
+  @Transactional
   public CommentDto addComment(Long postId, CreateCommentRequestDto request) {
     User author = currentUserService.getCurrentUser();
     Post post =
         postRepository
             .findById(postId)
-            .orElseThrow(() -> new ResourceNotFoundException("Post not found for id " + postId));
+            .orElseThrow(() -> new ResourceNotFoundException("Article introuvable."));
 
     Comment comment =
         commentRepository.save(

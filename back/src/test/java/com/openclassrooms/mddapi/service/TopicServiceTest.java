@@ -84,6 +84,6 @@ class TopicServiceTest {
 
     assertThatThrownBy(() -> topicService.unsubscribe(44L))
         .isInstanceOf(ResourceNotFoundException.class)
-        .hasMessageContaining("Topic not found");
+        .hasMessageContaining("Thème introuvable");
   }
 }

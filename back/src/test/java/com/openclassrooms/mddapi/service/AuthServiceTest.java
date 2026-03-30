@@ -65,7 +65,7 @@ class AuthServiceTest {
 
     assertThatThrownBy(() -> authService.register(new RegisterRequestDto("test@mail.com", "alice", "secret")))
         .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("Email is already used");
+        .hasMessage("Cet e-mail est déjà utilisé.");
   }
 
   @Test
@@ -90,6 +90,6 @@ class AuthServiceTest {
 
     assertThatThrownBy(() -> authService.login(new AuthRequestDto("unknown", "x")))
         .isInstanceOf(BadCredentialsException.class)
-        .hasMessage("Invalid credentials");
+        .hasMessage("Identifiants invalides.");
   }
 }

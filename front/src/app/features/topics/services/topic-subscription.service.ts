@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+ï»¿import { Injectable, signal } from '@angular/core';
 import { finalize } from 'rxjs';
 import { TopicResponse } from '../../../core/api/topics.models';
 import { TopicsService } from '../../../core/api/topics.service';
@@ -37,7 +37,7 @@ export class TopicSubscriptionService {
           this._topics.set(this.toTopicsViewModel(topics));
         },
         error: () => {
-          this._errorMessage.set('Impossible de charger les thèmes.');
+          this._errorMessage.set('Impossible de charger les thÃ¨mes.');
         },
       });
   }
@@ -69,7 +69,7 @@ export class TopicSubscriptionService {
           );
         },
         error: () => {
-          this._errorMessage.set("Impossible de mettre à jour l'abonnement.");
+          this._errorMessage.set("Impossible de mettre Ã  jour l'abonnement.");
         },
       });
   }
@@ -81,3 +81,4 @@ export class TopicSubscriptionService {
     }));
   }
 }
+

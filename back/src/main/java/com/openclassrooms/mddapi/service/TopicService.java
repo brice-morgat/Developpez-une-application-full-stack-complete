@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class TopicService {
 
   private final TopicRepository topicRepository;
@@ -47,7 +48,7 @@ public class TopicService {
   public void subscribe(Long topicId) {
     User user = currentUserService.getCurrentUser();
     Topic topic =
-        topicRepository.findById(topicId).orElseThrow(() -> new ResourceNotFoundException("Topic not found for id " + topicId));
+        topicRepository.findById(topicId).orElseThrow(() -> new ResourceNotFoundException("Thème introuvable."));
 
     if (!subscriptionRepository.existsByUserIdAndTopicId(user.getId(), topicId)) {
       subscriptionRepository.save(
@@ -59,7 +60,7 @@ public class TopicService {
   public void unsubscribe(Long topicId) {
     User user = currentUserService.getCurrentUser();
     if (!topicRepository.existsById(topicId)) {
-      throw new ResourceNotFoundException("Topic not found for id " + topicId);
+      throw new ResourceNotFoundException("Thème introuvable.");
     }
     subscriptionRepository.deleteByUserIdAndTopicId(user.getId(), topicId);
   }

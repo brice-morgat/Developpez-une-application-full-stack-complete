@@ -42,10 +42,10 @@ public class AuthService {
     String normalizedUsername = normalizeUsername(request.username());
 
     if (userRepository.existsByEmailIgnoreCase(normalizedEmail)) {
-      throw new IllegalArgumentException("Email is already used");
+      throw new IllegalArgumentException("Cet e-mail est déjà utilisé.");
     }
     if (userRepository.existsByUsernameIgnoreCase(normalizedUsername)) {
-      throw new IllegalArgumentException("Username is already used");
+      throw new IllegalArgumentException("Ce nom d'utilisateur est déjà utilisé.");
     }
 
     User user =
@@ -71,7 +71,7 @@ public class AuthService {
     User user =
         userRepository
             .findFirstByEmailIgnoreCaseOrUsernameIgnoreCaseOrderByIdDesc(normalizedEmailIdentifier, identifier)
-            .orElseThrow(() -> new BadCredentialsException("Invalid credentials"));
+            .orElseThrow(() -> new BadCredentialsException("Identifiants invalides."));
 
     authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(user.getUsername(), request.password()));

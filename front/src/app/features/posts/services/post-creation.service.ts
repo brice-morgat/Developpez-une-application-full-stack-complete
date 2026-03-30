@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+ï»¿import { Injectable, signal } from '@angular/core';
 import { finalize } from 'rxjs';
 import { FeedPost } from '../../../core/api/posts.models';
 import { PostsService } from '../../../core/api/posts.service';
@@ -41,7 +41,7 @@ export class PostCreationService {
           this._topics.set(topics);
         },
         error: () => {
-          this._errorMessage.set('Impossible de charger la liste des thèmes.');
+          this._errorMessage.set('Impossible de charger la liste des thÃ¨mes.');
         },
       });
   }
@@ -66,8 +66,9 @@ export class PostCreationService {
           onSuccess(post);
         },
         error: () => {
-          this._errorMessage.set("Impossible de créer l'article.");
+          this._errorMessage.set("Impossible de crÃ©er l'article.");
         },
       });
   }
 }
+

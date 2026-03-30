@@ -73,7 +73,7 @@ class PostControllerIT extends BaseIT {
                 .header("Authorization", bearer(token))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(commentBody))
-        .andExpect(status().isOk());
+        .andExpect(status().isCreated());
 
     String detailResponse =
         mockMvc
