@@ -1,11 +1,12 @@
 <form class="comment-form" [formGroup]="form" (ngSubmit)="submit()">
   <textarea
+    data-cy="comment-input"
     formControlName="content"
     rows="3"
     placeholder="Écrivez ici votre commentaire"
     aria-label="Votre commentaire"
   ></textarea>
-  <button class="send-btn" type="submit" [disabled]="submitting()" aria-label="Envoyer le commentaire">
+  <button data-cy="comment-submit" class="send-btn" type="submit" [disabled]="submitting()" aria-label="Envoyer le commentaire">
     <mat-icon>send</mat-icon>
   </button>
 </form>

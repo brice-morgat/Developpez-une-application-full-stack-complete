@@ -2,32 +2,32 @@
   <h1>Profil utilisateur</h1>
 
   @if (loading()) {
-    <p class="profile-state">Chargement du profil...</p>
+    <p data-cy="profile-loading" class="profile-state">Chargement du profil...</p>
   } @else {
     @if (errorMessage()) {
-      <p class="profile-state profile-state--error">{{ errorMessage() }}</p>
+      <p data-cy="profile-error" class="profile-state profile-state--error">{{ errorMessage() }}</p>
     }
     @if (successMessage()) {
-      <p class="profile-state profile-state--success">{{ successMessage() }}</p>
+      <p data-cy="profile-success" class="profile-state profile-state--success">{{ successMessage() }}</p>
     }
 
     <form [formGroup]="form" (ngSubmit)="save()" class="profile-form">
       <mat-form-field appearance="outline">
         <mat-label>Nom d'utilisateur</mat-label>
-        <input matInput formControlName="username" />
+        <input data-cy="profile-username" matInput formControlName="username" />
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>Adresse e-mail</mat-label>
-        <input matInput formControlName="email" />
+        <input data-cy="profile-email" matInput formControlName="email" />
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>Mot de passe</mat-label>
-        <input matInput type="password" formControlName="password" />
+        <input data-cy="profile-password" matInput type="password" formControlName="password" />
       </mat-form-field>
 
-      <button mat-flat-button type="submit" class="mdd-btn mdd-btn--primary save-btn" [disabled]="saving()">
+      <button data-cy="profile-save" mat-flat-button type="submit" class="mdd-btn mdd-btn--primary save-btn" [disabled]="saving()">
         Sauvegarder
       </button>
     </form>
@@ -37,9 +37,9 @@
     <h2>Abonnements</h2>
 
     @if (subscriptions().length === 0) {
-      <p class="profile-state">Aucun abonnement pour le moment.</p>
+      <p data-cy="profile-no-subscriptions" class="profile-state">Aucun abonnement pour le moment.</p>
     } @else {
-      <div class="subscriptions-grid">
+      <div data-cy="profile-subscriptions" class="subscriptions-grid">
         @for (topic of subscriptions(); track topic.id) {
           <app-subscription-card
             [topic]="topic"

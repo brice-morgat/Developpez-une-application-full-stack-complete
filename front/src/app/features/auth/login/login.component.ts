@@ -53,6 +53,9 @@ export class LoginComponent {
       next: () => {
         void this.router.navigateByUrl('/feed');
       },
+      error: () => {
+        // AuthState already exposes the backend message to the template.
+      },
     });
   }
 }

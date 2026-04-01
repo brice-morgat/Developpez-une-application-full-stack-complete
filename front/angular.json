@@ -75,6 +75,46 @@
           },
           "defaultConfiguration": "development"
         },
+        "build-e2e-coverage": {
+          "builder": "@angular-builders/custom-webpack:browser",
+          "options": {
+            "outputPath": "dist/front-e2e-coverage",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": ["src/favicon.png", "src/assets"],
+            "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
+              "src/styles/styles.scss"
+            ],
+            "scripts": [],
+            "customWebpackConfig": {
+              "path": "./webpack.e2e-coverage.cjs"
+            }
+          },
+          "configurations": {
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "serve-e2e-coverage": {
+          "builder": "@angular-builders/custom-webpack:dev-server",
+          "configurations": {
+            "development": {
+              "buildTarget": "front:build-e2e-coverage:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {

@@ -1,12 +1,19 @@
-﻿describe('Public pages', () => {
-  it('should display welcome page and navigate to login/register', () => {
-    cy.visit('/');
+describe('Public pages', () => {
+  it('navigates from welcome page to login and register', () => {
+    cy.visitApp('/');
 
-    cy.contains('button', 'Se connecter').should('be.visible').click();
+    cy.getBySel('welcome-login').click();
     cy.url().should('include', '/login');
 
-    cy.visit('/');
-    cy.contains('button', "S'inscrire").should('be.visible').click();
+    cy.visitApp('/');
+    cy.getBySel('welcome-register').click();
     cy.url().should('include', '/register');
+  });
+
+  ['/feed', '/topics', '/create-post', '/profile'].forEach((route) => {
+    it(`redirects unauthenticated users from ${route} to login`, () => {
+      cy.visitApp(route);
+      cy.url().should('include', '/login');
+    });
   });
 });

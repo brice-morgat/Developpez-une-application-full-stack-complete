@@ -1,23 +1,25 @@
 <section class="feed-screen">
   <div class="feed-toolbar">
-    <button mat-flat-button class="mdd-btn mdd-btn--primary create-btn" routerLink="/create-post">Créer un article</button>
-    <button class="sort-btn" type="button" (click)="toggleSort()" [disabled]="loading()">
+    <button data-cy="create-post-link" mat-flat-button class="mdd-btn mdd-btn--primary create-btn" routerLink="/create-post">
+      Créer un article
+    </button>
+    <button data-cy="feed-sort-button" class="sort-btn" type="button" (click)="toggleSort()" [disabled]="loading()">
       Trier par
       <mat-icon>{{ sort() === 'desc' ? 'south' : 'north' }}</mat-icon>
     </button>
   </div>
 
   @if (loading()) {
-    <p class="feed-state">Chargement des articles...</p>
+    <p data-cy="feed-loading" class="feed-state">Chargement des articles...</p>
   } @else if (errorMessage()) {
-    <p class="feed-state feed-state--error">{{ errorMessage() }}</p>
+    <p data-cy="feed-error" class="feed-state feed-state--error">{{ errorMessage() }}</p>
   } @else if (posts().length === 0) {
-    <p class="feed-state">
+    <p data-cy="feed-empty" class="feed-state">
       Aucun article à afficher. Abonnez-vous d'abord à un thème depuis
       <a routerLink="/topics">la page Thèmes</a>.
     </p>
   } @else {
-    <div class="feed-grid">
+    <div data-cy="feed-list" class="feed-grid">
       @for (post of posts(); track post.id) {
         <app-post-card [post]="post"></app-post-card>
       }

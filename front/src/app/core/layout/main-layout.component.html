@@ -5,12 +5,12 @@
     </a>
 
     <nav class="desktop-nav">
-      <a routerLink="/feed" routerLinkActive="active">Articles</a>
-      <a routerLink="/topics" routerLinkActive="active">Thèmes</a>
-      <a routerLink="/profile" routerLinkActive="active" class="avatar-link" aria-label="Profil">
+      <a data-cy="nav-feed" routerLink="/feed" routerLinkActive="active">Articles</a>
+      <a data-cy="nav-topics" routerLink="/topics" routerLinkActive="active">Thèmes</a>
+      <a data-cy="nav-profile" routerLink="/profile" routerLinkActive="active" class="avatar-link" aria-label="Profil">
         <mat-icon>account_circle</mat-icon>
       </a>
-      <button class="desktop-logout" type="button" (click)="logout()">Se déconnecter</button>
+      <button data-cy="logout-button" class="desktop-logout" type="button" (click)="logout()">Se déconnecter</button>
     </nav>
 
     <button class="mobile-menu-btn" type="button" (click)="toggleMobileMenu()" aria-label="Ouvrir le menu">
@@ -29,10 +29,10 @@
   <div class="mobile-overlay" (click)="closeMobileMenu()"></div>
   <aside class="mobile-drawer">
     <nav class="mobile-nav">
-      <a routerLink="/feed" routerLinkActive="active" (click)="closeMobileMenu()">Articles</a>
-      <a routerLink="/topics" routerLinkActive="active" (click)="closeMobileMenu()">Thèmes</a>
-      <a routerLink="/profile" routerLinkActive="active" (click)="closeMobileMenu()">Profil</a>
-      <button class="logout-btn" type="button" (click)="logout()">Se déconnecter</button>
+      <a data-cy="mobile-nav-feed" routerLink="/feed" routerLinkActive="active" (click)="closeMobileMenu()">Articles</a>
+      <a data-cy="mobile-nav-topics" routerLink="/topics" routerLinkActive="active" (click)="closeMobileMenu()">Thèmes</a>
+      <a data-cy="mobile-nav-profile" routerLink="/profile" routerLinkActive="active" (click)="closeMobileMenu()">Profil</a>
+      <button data-cy="mobile-logout-button" class="logout-btn" type="button" (click)="logout()">Se déconnecter</button>
     </nav>
 
     <a routerLink="/profile" class="mobile-avatar-link" aria-label="Profil" (click)="closeMobileMenu()">

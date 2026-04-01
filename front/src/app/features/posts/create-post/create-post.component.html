@@ -1,6 +1,6 @@
 <section class="create-post-screen">
   <header class="create-post-header">
-    <a class="back-link" routerLink="/feed" aria-label="Retour aux articles">
+    <a data-cy="create-post-back" class="back-link" routerLink="/feed" aria-label="Retour aux articles">
       <mat-icon>arrow_back</mat-icon>
     </a>
     <h1>Créer un article</h1>
@@ -9,7 +9,7 @@
   <form class="create-post-form" [formGroup]="form" (ngSubmit)="submit()">
     <mat-form-field appearance="outline">
       <mat-label>Sélectionner un thème</mat-label>
-      <mat-select formControlName="topicId" [disabled]="loadingTopics()">
+      <mat-select data-cy="create-post-topic" formControlName="topicId" [disabled]="loadingTopics()">
         @for (topic of topics(); track topic.id) {
           <mat-option [value]="topic.id">{{ topic.name }}</mat-option>
         }
@@ -18,20 +18,26 @@
 
     <mat-form-field appearance="outline">
       <mat-label>Titre de l'article</mat-label>
-      <input matInput formControlName="title" />
+      <input data-cy="create-post-title" matInput formControlName="title" />
     </mat-form-field>
 
     <mat-form-field appearance="outline">
       <mat-label>Contenu de l'article</mat-label>
-      <textarea matInput formControlName="content" rows="8"></textarea>
+      <textarea data-cy="create-post-content" matInput formControlName="content" rows="8"></textarea>
     </mat-form-field>
 
-    <button mat-flat-button type="submit" class="mdd-btn mdd-btn--primary submit-btn" [disabled]="submitting()">
+    <button
+      data-cy="create-post-submit"
+      mat-flat-button
+      type="submit"
+      class="mdd-btn mdd-btn--primary submit-btn"
+      [disabled]="submitting()"
+    >
       Créer
     </button>
 
     @if (errorMessage()) {
-      <p class="create-post-error">{{ errorMessage() }}</p>
+      <p data-cy="create-post-error" class="create-post-error">{{ errorMessage() }}</p>
     }
   </form>
 </section>

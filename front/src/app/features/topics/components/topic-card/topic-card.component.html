@@ -1,7 +1,8 @@
-﻿<article class="topic-card mdd-surface-card">
-  <h2>{{ topic().name }}</h2>
+<article class="topic-card mdd-surface-card" [attr.data-cy]="'topic-card-' + topic().id">
+  <h2 data-cy="topic-name">{{ topic().name }}</h2>
   <p>{{ topic().description }}</p>
   <button
+    [attr.data-cy]="'topic-toggle-' + topic().id"
     mat-flat-button
     type="button"
     class="mdd-btn subscribe-btn"

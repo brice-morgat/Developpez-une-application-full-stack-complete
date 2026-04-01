@@ -1,7 +1,13 @@
-<article class="subscription-card mdd-surface-card">
-  <h3>{{ topic().name }}</h3>
+<article class="subscription-card mdd-surface-card" [attr.data-cy]="'subscription-card-' + topic().id">
+  <h3 data-cy="subscription-name">{{ topic().name }}</h3>
   <p>{{ topic().description }}</p>
-  <button class="mdd-btn mdd-btn--primary unsubscribe-btn" type="button" [disabled]="pending()" (click)="onUnsubscribe()">
+  <button
+    [attr.data-cy]="'unsubscribe-topic-' + topic().id"
+    class="mdd-btn mdd-btn--primary unsubscribe-btn"
+    type="button"
+    [disabled]="pending()"
+    (click)="onUnsubscribe()"
+  >
     Se désabonner
   </button>
 </article>

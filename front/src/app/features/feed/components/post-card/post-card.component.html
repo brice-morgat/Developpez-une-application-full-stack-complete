@@ -1,5 +1,5 @@
-<article class="feed-card mdd-surface-card" [routerLink]="['/post', post().id]">
-  <h2>{{ post().title }}</h2>
+<article class="feed-card mdd-surface-card" [attr.data-cy]="'post-card-' + post().id" [routerLink]="['/post', post().id]">
+  <h2 data-cy="post-card-title">{{ post().title }}</h2>
   <div class="meta">
     <span>{{ post().createdAt | date : 'dd/MM/yyyy' }}</span>
     <span>{{ post().author.username }}</span>

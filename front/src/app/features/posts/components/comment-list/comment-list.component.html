@@ -1,6 +1,6 @@
-<section class="comments-list">
+<section data-cy="comments-list" class="comments-list">
   @for (comment of comments(); track comment.id) {
-    <article class="comment-row">
+    <article class="comment-row" [attr.data-cy]="'comment-' + comment.id">
       <span class="comment-author">{{ comment.author.username }}</span>
       <p class="comment-bubble">{{ comment.content }}</p>
     </article>

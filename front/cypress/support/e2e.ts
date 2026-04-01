@@ -1,1 +1,2 @@
-﻿// Place global Cypress hooks here.
+import '@cypress/code-coverage/support';
+import './commands';

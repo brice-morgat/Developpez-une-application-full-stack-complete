@@ -1,10 +1,10 @@
 @if (!loading() && post()) {
-  <section class="post-detail-screen">
+  <section data-cy="post-detail" class="post-detail-screen">
     <header class="post-heading">
-      <a class="back-link" routerLink="/feed" aria-label="Retour aux articles">
+      <a data-cy="post-detail-back" class="back-link" routerLink="/feed" aria-label="Retour aux articles">
         <mat-icon>arrow_back</mat-icon>
       </a>
-      <h1>{{ post()!.title }}</h1>
+      <h1 data-cy="post-detail-title">{{ post()!.title }}</h1>
     </header>
 
     <div class="post-meta">
@@ -24,9 +24,9 @@
 } @else {
   <section class="post-state">
     @if (loading()) {
-      <p>Chargement de l'article...</p>
+      <p data-cy="post-detail-loading">Chargement de l'article...</p>
     } @else if (errorMessage()) {
-      <p>{{ errorMessage() }}</p>
+      <p data-cy="post-detail-error">{{ errorMessage() }}</p>
     }
   </section>
 }
