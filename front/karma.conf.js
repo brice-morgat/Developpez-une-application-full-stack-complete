@@ -28,6 +28,7 @@ module.exports = function (config) {
       dir: require('path').join(__dirname, './coverage/front'),
       subdir: '.',
       reporters: [
+        { type: 'lcovonly' },
         { type: 'html' },
         { type: 'text-summary' }
       ]
