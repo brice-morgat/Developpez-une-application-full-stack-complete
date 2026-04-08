@@ -1,7 +1,15 @@
 <section class="welcome-page">
-  <img class="welcome-logo" src="assets/logo_p6.png" alt="MDD logo" />
+  <img
+    class="welcome-logo"
+    src="assets/logo_p6.png"
+    alt="MDD logo"
+    width="695"
+    height="401"
+    fetchpriority="high"
+    decoding="async"
+  />
   <div class="actions">
-    <button data-cy="welcome-login" mat-flat-button class="mdd-btn mdd-btn--primary" routerLink="/login">Se connecter</button>
-    <button data-cy="welcome-register" mat-stroked-button class="mdd-btn mdd-btn--outline" routerLink="/register">S'inscrire</button>
+    <a data-cy="welcome-login" class="mdd-btn mdd-btn--primary welcome-action" routerLink="/login">Se connecter</a>
+    <a data-cy="welcome-register" class="mdd-btn mdd-btn--outline welcome-action" routerLink="/register">S'inscrire</a>
   </div>
 </section>

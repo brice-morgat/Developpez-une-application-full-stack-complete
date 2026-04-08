@@ -1,0 +1,28 @@
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+$mdd-theme: mat.define-theme(
+  (
+    color: (
+      theme-type: light,
+      primary: mat.$violet-palette,
+      tertiary: mat.$orange-palette,
+    ),
+    density: (
+      scale: 0,
+    ),
+  )
+);
+
+html {
+  @include mat.core-theme($mdd-theme);
+  @include mat.button-theme($mdd-theme);
+  @include mat.icon-theme($mdd-theme);
+  @include mat.card-theme($mdd-theme);
+  @include mat.form-field-theme($mdd-theme);
+  @include mat.input-theme($mdd-theme);
+  @include mat.select-theme($mdd-theme);
+  @include mat.option-theme($mdd-theme);
+  @include mat.snack-bar-theme($mdd-theme);
+}

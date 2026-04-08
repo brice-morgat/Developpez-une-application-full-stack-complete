@@ -1,5 +1,5 @@
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter } from '@angular/router';
 import { importProvidersFrom } from '@angular/core';
 import { provideStore, withNgxsDevelopmentOptions } from '@ngxs/store';
@@ -15,7 +15,7 @@ export const appConfig = {
   providers: [
     provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor, errorToastInterceptor])),
-    provideAnimations(),
+    provideAnimationsAsync(),
     importProvidersFrom(MatSnackBarModule),
     provideStore(
       [AppState, AuthState],

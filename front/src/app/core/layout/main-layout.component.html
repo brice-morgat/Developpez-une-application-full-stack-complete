@@ -1,27 +1,43 @@
 @if (showMainHeader) {
   <header class="app-topbar">
     <a class="logo-link" routerLink="/feed" aria-label="Accueil MDD">
-      <img src="assets/logo_p6.png" alt="MDD logo" />
+      <img src="assets/logo_p6.png" alt="MDD logo" width="695" height="401" loading="lazy" decoding="async" />
     </a>
 
     <nav class="desktop-nav">
       <a data-cy="nav-feed" routerLink="/feed" routerLinkActive="active">Articles</a>
       <a data-cy="nav-topics" routerLink="/topics" routerLinkActive="active">Thèmes</a>
       <a data-cy="nav-profile" routerLink="/profile" routerLinkActive="active" class="avatar-link" aria-label="Profil">
-        <mat-icon>account_circle</mat-icon>
+        <span class="header-icon" aria-hidden="true">
+          <svg viewBox="0 0 48 48" focusable="false">
+            <circle class="profile-icon-bg" cx="24" cy="24" r="24" fill="#d9d9d9" />
+            <circle cx="24" cy="16.5" r="6" fill="none" stroke="currentColor" stroke-width="2.5" />
+            <path
+              d="M14 35c0-5.25 4.48-9.5 10-9.5s10 4.25 10 9.5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+            />
+          </svg>
+        </span>
       </a>
       <button data-cy="logout-button" class="desktop-logout" type="button" (click)="logout()">Se déconnecter</button>
     </nav>
 
     <button class="mobile-menu-btn" type="button" (click)="toggleMobileMenu()" aria-label="Ouvrir le menu">
-      <mat-icon>menu</mat-icon>
+      <span class="header-icon header-icon--menu" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false">
+          <path d="M4 7h16v2H4Zm0 5h16v2H4Zm0 5h16v2H4Z" fill="currentColor" />
+        </svg>
+      </span>
     </button>
   </header>
 }
 
 @if (showAuthHeader) {
   <header class="auth-topbar">
-    <img src="assets/logo_p6.png" alt="MDD logo" />
+    <img src="assets/logo_p6.png" alt="MDD logo" width="695" height="401" loading="lazy" decoding="async" />
   </header>
 }
 
@@ -35,12 +51,24 @@
       <button data-cy="mobile-logout-button" class="logout-btn" type="button" (click)="logout()">Se déconnecter</button>
     </nav>
 
-    <a routerLink="/profile" class="mobile-avatar-link" aria-label="Profil" (click)="closeMobileMenu()">
-      <mat-icon>account_circle</mat-icon>
+    <a routerLink="/profile" routerLinkActive="active" class="mobile-avatar-link" aria-label="Profil" (click)="closeMobileMenu()">
+      <span class="header-icon" aria-hidden="true">
+        <svg viewBox="0 0 48 48" focusable="false">
+          <circle class="profile-icon-bg" cx="24" cy="24" r="24" fill="#d9d9d9" />
+          <circle cx="24" cy="16.5" r="6" fill="none" stroke="currentColor" stroke-width="2.5" />
+          <path
+            d="M14 35c0-5.25 4.48-9.5 10-9.5s10 4.25 10 9.5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+          />
+        </svg>
+      </span>
     </a>
   </aside>
 }
 
-<main class="page-shell">
+<main class="page-shell" [class.page-shell--welcome]="isWelcomeRoute">
   <router-outlet></router-outlet>
 </main>

@@ -41,21 +41,27 @@ body {
   padding: 0 1rem;
 }
 
+.page-shell--welcome {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
 .auth-topbar {
-  height: 4.5rem;
+  height: 5.875rem;
   border: 0.0625rem solid #000;
   background: #fff;
   display: flex;
   align-items: center;
-  padding: 0 1rem;
+  padding: 0 1.375rem;
   width: 100%;
   box-sizing: border-box;
 }
 
 .auth-topbar img {
-  width: 6rem;
-  height: 2.75rem;
-  object-fit: contain;
+  width: 8.75rem;
+  height: auto;
+  display: block;
 }
 
 .page {

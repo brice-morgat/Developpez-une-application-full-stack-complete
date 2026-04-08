@@ -1,7 +1,5 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Store } from '@ngxs/store';
@@ -11,7 +9,7 @@ import { Logout } from '../auth/auth.actions';
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, MatButtonModule, MatIconModule],
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
   templateUrl: './main-layout.component.html',
   styleUrls: ['./main-layout.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,6 +19,7 @@ export class MainLayoutComponent {
   private readonly store = inject(Store);
   private readonly destroyRef = inject(DestroyRef);
 
+  protected isWelcomeRoute = true;
   protected showMainHeader = false;
   protected showAuthHeader = false;
   protected mobileMenuOpen = false;
@@ -53,7 +52,9 @@ export class MainLayoutComponent {
   }
 
   private updateRoute(url: string): void {
-    this.showAuthHeader = url.startsWith('/login') || url.startsWith('/register');
-    this.showMainHeader = !this.showAuthHeader && url !== '/';
+    const path = url.split('?')[0]?.split('#')[0] ?? '';
+    this.isWelcomeRoute = path === '' || path === '/';
+    this.showAuthHeader = path === '/login' || path === '/register';
+    this.showMainHeader = !this.isWelcomeRoute && !this.showAuthHeader;
   }
 }
