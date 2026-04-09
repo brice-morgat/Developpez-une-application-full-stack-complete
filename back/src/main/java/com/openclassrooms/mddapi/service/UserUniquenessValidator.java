@@ -14,14 +14,14 @@ public class UserUniquenessValidator {
 
   public void ensureEmailAvailable(String email) {
     if (userRepository.existsByEmailIgnoreCase(email)) {
-      throw new IllegalArgumentException("Cet e-mail est d\u00e9j\u00e0 utilis\u00e9.");
+      throw new IllegalArgumentException("Cet e-mail est déjà utilisé.");
     }
   }
 
   public void ensureUsernameAvailable(String username) {
     if (userRepository.existsByUsernameIgnoreCase(username)) {
       throw new IllegalArgumentException(
-          "Ce nom d'utilisateur est d\u00e9j\u00e0 utilis\u00e9.");
+          "Ce nom d'utilisateur est déjà utilisé.");
     }
   }
 
@@ -31,7 +31,7 @@ public class UserUniquenessValidator {
         .filter(existing -> !existing.getId().equals(currentUserId))
         .ifPresent(
             existing -> {
-              throw new IllegalArgumentException("Cet e-mail est d\u00e9j\u00e0 utilis\u00e9.");
+              throw new IllegalArgumentException("Cet e-mail est déjà utilisé.");
             });
   }
 
@@ -42,7 +42,7 @@ public class UserUniquenessValidator {
         .ifPresent(
             existing -> {
               throw new IllegalArgumentException(
-                  "Ce nom d'utilisateur est d\u00e9j\u00e0 utilis\u00e9.");
+                  "Ce nom d'utilisateur est déjà utilisé.");
             });
   }
 }

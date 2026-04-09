@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,30 +10,7 @@ import { Router, RouterLink } from '@angular/router';
 import { Store } from '@ngxs/store';
 import { Register } from '../../../core/auth/auth.actions';
 import { AuthState } from '../../../core/auth/auth.state';
-
-const HAS_DIGIT = /\d/;
-const HAS_LOWERCASE = /[a-z]/;
-const HAS_UPPERCASE = /[A-Z]/;
-const HAS_SPECIAL = /[^A-Za-z0-9]/;
-
-export function passwordComplexityValidator(): ValidatorFn {
-  return (control: AbstractControl<string | null>): ValidationErrors | null => {
-    const value = control.value ?? '';
-
-    if (!value) {
-      return null;
-    }
-
-    const valid =
-      value.length >= 8 &&
-      HAS_DIGIT.test(value) &&
-      HAS_LOWERCASE.test(value) &&
-      HAS_UPPERCASE.test(value) &&
-      HAS_SPECIAL.test(value);
-
-    return valid ? null : { passwordComplexity: true };
-  };
-}
+import { passwordComplexityValidator } from '../../../core/validation/password-complexity.validator';
 
 @Component({
   selector: 'app-register',

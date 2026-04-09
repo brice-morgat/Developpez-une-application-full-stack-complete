@@ -74,13 +74,13 @@ class AuthServiceTest {
     when(userIdentityNormalizer.normalizeEmail("test@mail.com")).thenReturn("test@mail.com");
     when(userIdentityNormalizer.normalizeUsername("alice")).thenReturn("alice");
     org.mockito.Mockito.doThrow(
-            new IllegalArgumentException("Cet e-mail est d\u00e9j\u00e0 utilis\u00e9."))
+            new IllegalArgumentException("Cet e-mail est déjà utilisé."))
         .when(userUniquenessValidator)
         .ensureEmailAvailable("test@mail.com");
 
     assertThatThrownBy(() -> authService.register(new RegisterRequestDto("test@mail.com", "alice", "secret")))
         .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("Cet e-mail est d\u00e9j\u00e0 utilis\u00e9.");
+        .hasMessage("Cet e-mail est déjà utilisé.");
   }
 
   @Test

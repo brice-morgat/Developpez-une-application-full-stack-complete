@@ -4,6 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { passwordComplexityValidator } from '../../core/validation/password-complexity.validator';
 import { SubscriptionCardComponent } from './components/subscription-card/subscription-card.component';
 import {
   ProfileSettingsService,
@@ -34,7 +35,7 @@ export class ProfileComponent implements OnInit {
   protected readonly form = this.fb.nonNullable.group({
     username: ['', [Validators.required]],
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.minLength(6)]],
+    password: ['', [Validators.minLength(8), passwordComplexityValidator()]],
   });
 
   protected readonly subscriptions = this.profileSettingsService.subscriptions;

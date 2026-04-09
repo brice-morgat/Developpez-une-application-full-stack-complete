@@ -53,7 +53,7 @@ public class TopicService {
     Topic topic =
         topicRepository
             .findById(topicId)
-            .orElseThrow(() -> new ResourceNotFoundException("Th\u00e8me introuvable."));
+            .orElseThrow(() -> new ResourceNotFoundException("Thème introuvable."));
 
     if (!subscriptionRepository.existsByUserIdAndTopicId(user.getId(), topicId)) {
       subscriptionRepository.save(
@@ -65,7 +65,7 @@ public class TopicService {
   public void unsubscribe(Long topicId) {
     User user = currentAuthenticatedUserProvider.getCurrentUser();
     if (!topicRepository.existsById(topicId)) {
-      throw new ResourceNotFoundException("Th\u00e8me introuvable.");
+      throw new ResourceNotFoundException("Thème introuvable.");
     }
     subscriptionRepository.deleteByUserIdAndTopicId(user.getId(), topicId);
   }

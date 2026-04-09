@@ -54,14 +54,14 @@ class UserServiceTest {
     when(currentAuthenticatedUserProvider.getCurrentUser()).thenReturn(current);
     when(userIdentityNormalizer.normalizeEmail("taken@mail.com")).thenReturn("taken@mail.com");
     org.mockito.Mockito.doThrow(
-            new IllegalArgumentException("Cet e-mail est d\u00e9j\u00e0 utilis\u00e9."))
+            new IllegalArgumentException("Cet e-mail est déjà utilisé."))
         .when(userUniquenessValidator)
         .ensureEmailAvailableForUpdate("taken@mail.com", 1L);
 
     assertThatThrownBy(
             () -> userService.updateCurrentUser(new UpdateMeRequestDto("taken@mail.com", null, null)))
         .isInstanceOf(IllegalArgumentException.class)
-        .hasMessage("Cet e-mail est d\u00e9j\u00e0 utilis\u00e9.");
+        .hasMessage("Cet e-mail est déjà utilisé.");
   }
 
   @Test

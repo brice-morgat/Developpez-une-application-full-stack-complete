@@ -66,6 +66,33 @@ class UserControllerIT extends BaseIT {
   }
 
   @Test
+  void givenWeakPassword_whenUpdateProfile_thenBadRequestIsReturned() throws Exception {
+    String token = registerAndLogin(uniqueEmail("profile-weak"), uniqueUsername("profile_weak"));
+
+    String updateBody =
+        """
+        {
+          "password": "simple"
+        }
+        """;
+
+    String response =
+        mockMvc
+            .perform(
+                put("/api/users/me")
+                    .header("Authorization", bearer(token))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(updateBody))
+            .andExpect(status().isBadRequest())
+            .andReturn()
+            .getResponse()
+            .getContentAsString(StandardCharsets.UTF_8);
+
+    JsonNode json = parseBody(response);
+    assertThat(json.get("details").get("password").asText()).contains("au moins une minuscule");
+  }
+
+  @Test
   void givenUserSubscribedToTopic_whenGetProfile_thenSubscriptionsContainTopic() throws Exception {
     Topic topic = createTopic("Profile Topic");
     String email = uniqueEmail("user-sub");

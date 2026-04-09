@@ -1,12 +1,12 @@
 # Comparatif Lighthouse - 2026-04-09
 
-## Perimetre
-- URL mesuree: page d'accueil locale servie depuis `dist/front`
+## Périmètre
+- URL mesurée: page d'accueil locale servie depuis `dist/front`
 - Outil: Lighthouse headless en local
 - Baseline: avant optimisation du shell Angular / Material
-- Mesure finale: apres optimisation du shell, chargement asynchrone des animations et allegerement du theme Material global
+- Mesure finale: après optimisation du shell, chargement asynchrone des animations et allègement du thème Material global
 
-## Resultats
+## Résultats
 - Bundle initial: `669.00 kB` -> `529.48 kB` (`-139.52 kB`)
 - `main.js`: `539.13 kB` -> `471.20 kB` (`-67.93 kB`)
 - `styles.css`: `92.14 kB` -> `20.35 kB` (`-71.79 kB`)
@@ -21,11 +21,11 @@
 - Speed Index: `4.7 s` -> `3.7 s`
 
 ## Lecture
-- Le gain principal vient de l'allegerissement du shell initial et du remplacement du theme Material prebuilt par un theme cible sur les composants reellement utilises.
-- Le chargement asynchrone des animations deplace aussi une partie du cout Angular hors du bundle initial.
-- Le point `Best Practices` initialement degrade a finalement ete corrige en remettant un ratio d'image coherent sur le logo de la page d'accueil.
+- Le gain principal vient de l'allègement du shell initial et du remplacement du thème Material prebuilt par un thème ciblé sur les composants réellement utilisés.
+- Le chargement asynchrone des animations déplace aussi une partie du coût Angular hors du bundle initial.
+- Le point `Best Practices` initialement dégradé a finalement été corrigé en remettant un ratio d'image cohérent sur le logo de la page d'accueil.
 
 ## Artefacts
 - Avant: `docs/qualimetrie/lighthouse-summary-before-optimizations.json`
-- Apres: `docs/qualimetrie/lighthouse-summary-after-optimizations.json`
+- Après: `docs/qualimetrie/lighthouse-summary-after-optimizations.json`
 - Rapport courant: `docs/qualimetrie/lighthouse-summary.json`

@@ -1,32 +1,32 @@
-# Audit qualite / performance
+# Audit qualité / performance
 
 Date: 2026-04-09
 
-## Sources utilisees
-- verification locale du 2026-04-09:
+## Sources utilisées
+- vérification locale du 2026-04-09:
   - `front`: `npm run unit`, `npm run build`
   - `back`: `./mvnw.cmd test`
-- artefacts qualimetrie existants du 2026-04-03:
+- artefacts qualimétrie existants du 2026-04-03:
   - `docs/qualimetrie/lighthouse-summary.json`
   - `docs/qualimetrie/npm-audit.json`
   - `docs/qualimetrie/rapport-audit-local-2026-04-03.md`
 
-## Synthese executive
-- Qualite de code globale: bonne base de projet, architecture lisible, tests presents des deux cotes
-- Performance front: acceptable pour un MVP, mais perfectible, principalement a cause du bundle initial
-- Risque securite principal: backlog de dependances front vulnerables et stockage du JWT dans le navigateur
-- Risque scalabilite principal: absence de pagination sur le feed API et chargement integral de certaines listes
+## Synthèse exécutive
+- Qualité de code globale: bonne base de projet, architecture lisible, tests présents des deux côtés
+- Performance front: acceptable pour un MVP, mais perfectible, principalement à cause du bundle initial
+- Risque sécurité principal: backlog de dépendances front vulnérables et stockage du JWT dans le navigateur
+- Risque scalabilité principal: absence de pagination sur le feed API et chargement intégral de certaines listes
 
-## Etat qualite
+## État qualité
 
 ### Points positifs
-- architecture front/back claire et separee
-- validations front de l'inscription co-localisees avec le formulaire Angular qui les consomme, ce qui evite un utilitaire global a usage unique
-- couche service backend coherente, avec transactions en lecture seule par defaut sur les services metier
-- `spring.jpa.open-in-view: false`, ce qui limite les acces JPA tardifs non maitrises
-- repositories backend optimises sur les lectures critiques avec `@EntityGraph` pour limiter les N+1 sur articles et commentaires
-- DTO d'erreur structure (`ApiErrorDto`) pour une remontee d'erreurs exploitable cote front
-- outillage qualite deja en place:
+- architecture front/back claire et séparée
+- validations front de l'inscription co-localisées avec le formulaire Angular qui les consomme, ce qui évite un utilitaire global à usage unique
+- couche service backend cohérente, avec transactions en lecture seule par défaut sur les services métier
+- `spring.jpa.open-in-view: false`, ce qui limite les accès JPA tardifs non maîtrisés
+- repositories backend optimisés sur les lectures critiques avec `@EntityGraph` pour limiter les N+1 sur articles et commentaires
+- DTO d'erreur structuré (`ApiErrorDto`) pour une remontée d'erreurs exploitable côté front
+- outillage qualité déjà en place:
   - JaCoCo
   - Sonar Maven plugin
   - OWASP dependency-check
@@ -34,18 +34,18 @@ Date: 2026-04-09
   - Cypress avec couverture applicative
 
 ### Points de vigilance
-- incoherence de politique mot de passe entre inscription et mise a jour du profil:
-  - inscription: politique forte validee cote back et directement dans le formulaire Angular d'inscription
-  - profil: minimum `6` caracteres uniquement
-- les rapports qualite ne sont pas encore consolides automatiquement en CI avec seuils bloquants
+- incohérence de politique mot de passe entre inscription et mise à jour du profil:
+  - inscription: politique forte validée côté back et directement dans le formulaire Angular d'inscription
+  - profil: minimum `6` caractères uniquement
+- les rapports qualité ne sont pas encore consolidés automatiquement en CI avec seuils bloquants
 
 ## Audit performance
 
 ### Front-end
-Build production observe:
+Build production observé:
 - bundle initial: `529.48 kB`
 - budget Angular: `500.00 kB`
-- depassement: `29.48 kB`
+- dépassement: `29.48 kB`
 
 Lighthouse local disponible:
 - Performance: `76`
@@ -58,7 +58,7 @@ Lighthouse local disponible:
 - CLS: `0.019`
 - Speed Index: `3.7 s`
 
-Historique avant / apres optimisation du 2026-04-09:
+Historique avant / après optimisation du 2026-04-09:
 - bundle initial: `669.00 kB` -> `529.48 kB` (`-139.52 kB`)
 - `main.js`: `539.13 kB` -> `471.20 kB` (`-67.93 kB`)
 - `styles.css`: `92.14 kB` -> `20.35 kB` (`-71.79 kB`)
@@ -71,21 +71,21 @@ Historique avant / apres optimisation du 2026-04-09:
 - Speed Index: `4.7 s` -> `3.7 s`
 
 Lecture:
-- le projet reste stable en rendu et sain sur l'accessibilite
-- les optimisations appliquees ont apporte un gain visible sur le chargement initial et sur la metrique LCP
-- le bundle initial reste legerement au-dessus du budget, donc la marge d'evolution reste a surveiller
+- le projet reste stable en rendu et sain sur l'accessibilité
+- les optimisations appliquées ont apporté un gain visible sur le chargement initial et sur la métrique LCP
+- le bundle initial reste légèrement au-dessus du budget, donc la marge d'évolution reste à surveiller
 
 ### Back-end
 Observations de conception:
 - les lectures feed/detail utilisent `@EntityGraph`, ce qui est positif
-- le feed recupere l'ensemble des posts des themes suivis sans pagination
-- le catalogue des themes est charge en entier via `findAll()`
+- le feed récupère l'ensemble des posts des thèmes suivis sans pagination
+- le catalogue des thèmes est chargé en entier via `findAll()`
 
 Impact attendu:
 - comportement acceptable sur petit volume
-- degradation probable du temps de reponse et du volume transfere quand le nombre de posts ou de themes augmente
+- dégradation probable du temps de réponse et du volume transféré quand le nombre de posts ou de thèmes augmente
 
-## Audit securite / dependances
+## Audit sécurité / dépendances
 
 ### Front-end
 `npm audit` disponible dans `docs/qualimetrie/npm-audit.json`:
@@ -95,33 +95,33 @@ Impact attendu:
 - critical: `0`
 
 Constat principal:
-- la majorite des alertes remontent sur la chaine Angular CLI / build et dependances transitives associees
-- plusieurs corrections sont disponibles, parfois via une mise a niveau majeure de la CLI
+- la majorité des alertes remontent sur la chaîne Angular CLI / build et dépendances transitives associées
+- plusieurs corrections sont disponibles, parfois via une mise à niveau majeure de la CLI
 
 ### Back-end
 Dernier audit local disponible dans `docs/qualimetrie/rapport-audit-local-2026-04-03.md`:
-- `6` vulnerabilites `medium`
-- principale exposition citee: pile Swagger UI / DOMPurify
+- `6` vulnérabilités `medium`
+- principale exposition citée: pile Swagger UI / DOMPurify
 
 ### Stockage du token
-- l'etat `auth` est persiste via NGXS storage plugin
-- cela ameliore l'experience utilisateur
-- cela expose davantage le JWT aux consequences d'une faille XSS qu'une strategie par cookie `HttpOnly`
+- l'état `auth` est persisté via NGXS storage plugin
+- cela améliore l'expérience utilisateur
+- cela expose davantage le JWT aux conséquences d'une faille XSS qu'une stratégie par cookie `HttpOnly`
 
-## Recommandations priorisees
+## Recommandations priorisées
 
 ### P0
-- Resorber les dependances front vulnerables, en commencant par les packages Angular et outillage build.
+- Résorber les dépendances front vulnérables, en commençant par les packages Angular et l'outillage build.
 - Revenir sous le budget front de `500 kB`, au minimum sur le bundle initial.
 - Aligner la politique mot de passe entre inscription et profil.
 
 ### P1
-- Ajouter une pagination backend sur le feed et l'exposer cote front.
-- Introduire une pagination ou un filtrage sur la liste des themes si le volume fonctionnel augmente.
-- Arbitrer explicitement la strategie de stockage du JWT en fonction du niveau de risque XSS accepte.
+- Ajouter une pagination backend sur le feed et l'exposer côté front.
+- Introduire une pagination ou un filtrage sur la liste des thèmes si le volume fonctionnel augmente.
+- Arbitrer explicitement la stratégie de stockage du JWT en fonction du niveau de risque XSS accepté.
 
 ### P2
-- Industrialiser les rapports qualite en CI:
+- Industrialiser les rapports qualité en CI:
   - tests
   - couvertures
   - `npm audit`
@@ -129,6 +129,6 @@ Dernier audit local disponible dans `docs/qualimetrie/rapport-audit-local-2026-0
   - Lighthouse
 
 ## Conclusion
-- La base qualite est bonne et deja bien outillee.
-- Les gains les plus rentables a court terme, dans une logique MVP d'entreprise, sont sur les dependances front, le poids du bundle initial et la scalabilite du feed.
-- Le projet est techniquement sain pour un lancement encadre ou un premier lot utilisateur, mais quelques decisions devront etre revisitees avant une montee en charge plus serieuse.
+- La base qualité est bonne et déjà bien outillée.
+- Les gains les plus rentables à court terme, dans une logique MVP d'entreprise, sont sur les dépendances front, le poids du bundle initial et la scalabilité du feed.
+- Le projet est techniquement sain pour un lancement encadré ou un premier lot utilisateur, mais quelques décisions devront être revisitées avant une montée en charge plus sérieuse.

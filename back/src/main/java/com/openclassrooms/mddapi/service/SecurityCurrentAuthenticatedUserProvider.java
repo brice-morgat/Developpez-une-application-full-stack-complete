@@ -21,7 +21,7 @@ public class SecurityCurrentAuthenticatedUserProvider implements CurrentAuthenti
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication == null || authentication.getName() == null) {
       throw new AuthenticationCredentialsNotFoundException(
-          "Utilisateur non authentifi\u00e9.");
+          "Utilisateur non authentifié.");
     }
 
     return userRepository

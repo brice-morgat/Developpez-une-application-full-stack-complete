@@ -13,15 +13,15 @@ public record RegisterRequestDto(
     @Size(
         min = 3,
         max = 100,
-        message = "Le nom d'utilisateur doit contenir entre 3 et 100 caract\u00e8res.")
+        message = "Le nom d'utilisateur doit contenir entre 3 et 100 caractères.")
     String username,
     @NotBlank(message = "Le mot de passe est obligatoire.")
     @Size(
         min = 8,
         max = 120,
-        message = "Le mot de passe doit contenir entre 8 et 120 caract\u00e8res.")
+        message = "Le mot de passe doit contenir entre 8 et 120 caractères.")
     @Pattern(
         regexp = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,120}$",
         message =
-            "Le mot de passe doit contenir au moins une minuscule, une majuscule, un chiffre et un caract\u00e8re sp\u00e9cial.")
+            "Le mot de passe doit contenir au moins une minuscule, une majuscule, un chiffre et un caractère spécial.")
     String password) {}

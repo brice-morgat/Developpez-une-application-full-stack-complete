@@ -30,8 +30,8 @@ class RegisterPasswordValidationIT extends BaseIT {
             .andReturn();
 
     JsonNode json = parseBody(result.getResponse().getContentAsString(StandardCharsets.UTF_8));
-    assertThat(json.get("message").asText()).isEqualTo("Donn\u00e9es invalides.");
+    assertThat(json.get("message").asText()).isEqualTo("Données invalides.");
     assertThat(json.get("details").get("password").asText())
-        .contains("au moins une minuscule, une majuscule, un chiffre et un caract\u00e8re sp\u00e9cial");
+        .contains("au moins une minuscule, une majuscule, un chiffre et un caractère spécial");
   }
 }

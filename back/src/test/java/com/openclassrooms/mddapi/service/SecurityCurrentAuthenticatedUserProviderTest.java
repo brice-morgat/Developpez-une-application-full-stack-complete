@@ -45,6 +45,6 @@ class SecurityCurrentAuthenticatedUserProviderTest {
   void getCurrentUser_shouldFailWhenAuthenticationMissing() {
     assertThatThrownBy(() -> provider.getCurrentUser())
         .isInstanceOf(AuthenticationCredentialsNotFoundException.class)
-        .hasMessage("Utilisateur non authentifi\u00e9.");
+        .hasMessage("Utilisateur non authentifié.");
   }
 }

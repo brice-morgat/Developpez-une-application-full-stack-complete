@@ -61,11 +61,11 @@ public class PostService {
     Topic topic =
         topicRepository
             .findById(request.topicId())
-            .orElseThrow(() -> new ResourceNotFoundException("Th\u00e8me introuvable."));
+            .orElseThrow(() -> new ResourceNotFoundException("Thème introuvable."));
 
     if (!subscriptionRepository.existsByUserIdAndTopicId(author.getId(), topic.getId())) {
       throw new ForbiddenOperationException(
-          "Vous devez \u00eatre abonn\u00e9 au th\u00e8me pour publier un article.");
+          "Vous devez être abonné au thème pour publier un article.");
     }
 
     return postRepository.save(

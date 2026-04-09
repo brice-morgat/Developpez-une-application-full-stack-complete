@@ -1,5 +1,5 @@
 import { FormControl } from '@angular/forms';
-import { passwordComplexityValidator } from './register.component';
+import { passwordComplexityValidator } from '../../../core/validation/password-complexity.validator';
 
 describe('passwordComplexityValidator', () => {
   const validator = passwordComplexityValidator();

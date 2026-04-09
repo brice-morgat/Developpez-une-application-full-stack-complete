@@ -155,7 +155,7 @@ class PostServiceTest {
     assertThatThrownBy(
             () -> postService.createPost(new CreatePostRequestDto(3L, "Title", "Content")))
         .isInstanceOf(ForbiddenOperationException.class)
-        .hasMessage("Vous devez \u00eatre abonn\u00e9 au th\u00e8me pour publier un article.");
+        .hasMessage("Vous devez être abonné au thème pour publier un article.");
 
     verify(postRepository, never()).save(any(Post.class));
   }

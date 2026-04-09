@@ -2,83 +2,83 @@
 
 Date: 2026-04-09
 
-## Resume
-- Le projet presente une architecture full-stack lisible, avec une separation claire entre UI Angular et API Spring Boot.
-- Les parcours metier principaux sont couverts par des tests front et back.
-- Dans une logique MVP en entreprise, la base technique est suffisamment propre pour soutenir les premiers usages, mais plusieurs sujets devront etre arbitres ou traites avant une generalisation plus large: scalabilite du feed, securite du stockage du token, coherence fonctionnelle de certaines validations et poids du bundle front.
+## Résumé
+- Le projet présente une architecture full-stack lisible, avec une séparation claire entre UI Angular et API Spring Boot.
+- Les parcours métier principaux sont couverts par des tests front et back.
+- Dans une logique MVP en entreprise, la base technique est suffisamment propre pour soutenir les premiers usages, mais plusieurs sujets devront être arbitrés ou traités avant une généralisation plus large: scalabilité du feed, sécurité du stockage du token, cohérence fonctionnelle de certaines validations et poids du bundle front.
 
 ## Points forts
-- Architecture decouplee front/back, simple a relire et a faire evoluer.
-- Authentification JWT centralisee et bien integree entre front et back.
-- Gestion d'erreurs backend structuree avec un DTO dedie.
-- Services backend globalement bien decoupes, avec `@Transactional(readOnly = true)` par defaut.
-- Requetes de lecture critiques optimisees avec `@EntityGraph` sur les posts et commentaires.
-- `open-in-view` desactive, ce qui est un bon choix de maitrise de la couche persistence.
-- Base de tests des deux cotes deja serieuse:
+- Architecture découplée front/back, simple à relire et à faire évoluer.
+- Authentification JWT centralisée et bien intégrée entre front et back.
+- Gestion d'erreurs backend structurée avec un DTO dédié.
+- Services backend globalement bien découpés, avec `@Transactional(readOnly = true)` par défaut.
+- Requêtes de lecture critiques optimisées avec `@EntityGraph` sur les posts et commentaires.
+- `open-in-view` désactivé, ce qui est un bon choix de maîtrise de la couche persistence.
+- Base de tests des deux côtés déjà sérieuse:
   - tests unitaires front
   - E2E Cypress
-  - tests unitaires et d'integration backend
+  - tests unitaires et d'intégration backend
 
 ## Constats techniques
 
-### 1. Scalabilite du feed a surveiller
-Le feed backend charge tous les articles des themes suivis, avec tri ascendant ou descendant, mais sans pagination.
+### 1. Scalabilité du feed à surveiller
+Le feed backend charge tous les articles des thèmes suivis, avec tri ascendant ou descendant, mais sans pagination.
 
 Effets:
-- volume de donnees non borne cote API
-- temps de reponse amene a croitre avec les abonnements et le nombre de posts
-- charge front egalement croissante sur le rendu initial du feed
+- volume de données non borné côté API
+- temps de réponse amené à croître avec les abonnements et le nombre de posts
+- charge front également croissante sur le rendu initial du feed
 
-### 2. Chargement integral des themes
-La liste des themes est construite a partir d'un `findAll()` et d'un mapping en memoire avec les abonnements utilisateurs.
-
-Effets:
-- tres acceptable a petite volumetrie
-- moins robuste si le catalogue de themes devient important
-
-### 3. Strategie de stockage du JWT
-L'etat `auth` est persiste cote front via le storage plugin NGXS.
+### 2. Chargement intégral des thèmes
+La liste des thèmes est construite à partir d'un `findAll()` et d'un mapping en mémoire avec les abonnements utilisateurs.
 
 Effets:
-- bon confort utilisateur, coherent avec une phase MVP ou l'on privilegie la fluidite d'usage
+- très acceptable à petite volumétrie
+- moins robuste si le catalogue de thèmes devient important
+
+### 3. Stratégie de stockage du JWT
+L'état `auth` est persisté côté front via le storage plugin NGXS.
+
+Effets:
+- bon confort utilisateur, cohérent avec une phase MVP où l'on privilégie la fluidité d'usage
 - exposition accrue du token si une faille XSS apparaissait dans l'application
 
-### 4. Incoherence de validation metier sur le mot de passe
-Le parcours d'inscription applique une politique de mot de passe forte, alors que la mise a jour du profil n'impose actuellement qu'une longueur minimale de `6` caracteres.
+### 4. Incohérence de validation métier sur le mot de passe
+Le parcours d'inscription applique une politique de mot de passe forte, alors que la mise à jour du profil n'impose actuellement qu'une longueur minimale de `6` caractères.
 
 Effets:
-- incoherence fonctionnelle
-- diminution du niveau de securite attendu sur la mise a jour des credentials
+- incohérence fonctionnelle
+- diminution du niveau de sécurité attendu sur la mise à jour des credentials
 
 ### 5. Bundle front au-dessus du budget
-Le build production reste fonctionnel et a ete nettement allege, mais il depasse encore legerement le budget Angular fixe pour le bundle initial.
+Le build production reste fonctionnel et a été nettement allégé, mais il dépasse encore légèrement le budget Angular fixé pour le bundle initial.
 
 Effets:
-- chargement initial sensiblement ameliore
+- chargement initial sensiblement amélioré
 - marge de progression restante avant de revenir sous le seuil cible et d'absorber sereinement de nouvelles features
 
 ## Recommandations
 
-### Priorite haute
-- Introduire une pagination sur le feed backend et cote front.
-- Uniformiser la politique mot de passe entre inscription et mise a jour de profil.
-- Reduire le bundle initial front pour revenir sous le budget de `500 kB`.
-- Planifier la remediations des vulnerabilites `npm audit` les plus critiques.
+### Priorité haute
+- Introduire une pagination sur le feed backend et côté front.
+- Uniformiser la politique mot de passe entre inscription et mise à jour de profil.
+- Réduire le bundle initial front pour revenir sous le budget de `500 kB`.
+- Planifier la remédiation des vulnérabilités `npm audit` les plus critiques.
 
-### Priorite moyenne
-- Revoir la strategie de persistance du token si le projet vise un contexte plus expose.
-- Ajouter des seuils qualite bloquants en CI sur tests, couverture et audits.
-- Evaluer si la liste des themes doit rester chargee en entier ou devenir paginee / filtrable.
+### Priorité moyenne
+- Revoir la stratégie de persistance du token si le projet vise un contexte plus exposé.
+- Ajouter des seuils qualité bloquants en CI sur tests, couverture et audits.
+- Évaluer si la liste des thèmes doit rester chargée en entier ou devenir paginée / filtrable.
 
-### Priorite basse
-- Consolider la documentation qualite pour qu'elle soit regenerable automatiquement.
+### Priorité basse
+- Consolider la documentation qualité pour qu'elle soit régénérable automatiquement.
 
-## Risques residuels
-- Les volumes de donnees ne sont pas encore bornes sur certains flux.
-- La securite du JWT reste dependante de l'absence de faille XSS cote front.
-- La qualimetrie existe, mais elle reste encore partiellement manuelle.
+## Risques résiduels
+- Les volumes de données ne sont pas encore bornés sur certains flux.
+- La sécurité du JWT reste dépendante de l'absence de faille XSS côté front.
+- La qualimétrie existe, mais elle reste encore partiellement manuelle.
 
 ## Conclusion
 - La revue technique est globalement positive pour un MVP en contexte entreprise.
-- Les fondamentaux d'architecture, de couverture et de separation des responsabilites sont suffisants pour soutenir une premiere mise en service encadree.
-- Le prochain palier de maturite passe surtout par l'industrialisation qualite, la reduction du poids front et une meilleure preparation a la volumetrie.
+- Les fondamentaux d'architecture, de couverture et de séparation des responsabilités sont suffisants pour soutenir une première mise en service encadrée.
+- Le prochain palier de maturité passe surtout par l'industrialisation qualité, la réduction du poids front et une meilleure préparation à la volumétrie.
